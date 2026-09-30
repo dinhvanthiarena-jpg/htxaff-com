@@ -31,9 +31,10 @@ nền tảng gốc, chỉ tái hiện lại chức năng và giao diện.
 ## Công nghệ
 
 - Node.js + Express (server-side rendering với EJS)
-- **Sequelize ORM + SQLite** cục bộ (file `data/app.db`) — sẵn sàng đổi sang **PostgreSQL** thật
-  chỉ bằng cách set biến môi trường `DATABASE_URL`, không cần sửa code (xem mục "Sẵn sàng lên
-  production" bên dưới)
+- **Sequelize ORM + SQLite** cục bộ (file `data/app.db`) — sẵn sàng đổi sang **MySQL** (đã cài
+  sẵn `mysql2`, dùng được ngay trên MySQL có sẵn của shared hosting cPanel) hoặc **PostgreSQL**
+  thật, chỉ bằng cách set biến môi trường `DATABASE_URL`, không cần sửa code (xem mục "Sẵn sàng
+  lên production" bên dưới)
 - Session lưu trong database (bảng `Sessions`, qua `connect-session-sequelize`) — sống sót qua
   restart và dùng chung được giữa nhiều tiến trình server, thay vì lưu RAM như bản cũ
 - express-session cho đăng nhập, bcryptjs mã hoá mật khẩu, multer upload ảnh/video
@@ -69,7 +70,7 @@ seller-center-clone/
   server.js                  # entry point — kết nối DB xong mới listen
   src/
     app.js                   # cấu hình Express, session store, mount toàn bộ router
-    models/index.js          # Sequelize models (SQLite cục bộ / PostgreSQL qua DATABASE_URL)
+    models/index.js          # Sequelize models (SQLite cục bộ / MySQL hoặc PostgreSQL qua DATABASE_URL)
     seed.js                  # dữ liệu mẫu cho tất cả module
     middleware/auth.js        # bảo vệ route cần đăng nhập + kiểm tra phân quyền
     routes/                  # auth, dashboard, products, orders, inventory, promotions,
@@ -88,11 +89,16 @@ seller-center-clone/
 Bản này đã dùng **Sequelize ORM** thay vì đọc/ghi file JSON trực tiếp, nên việc chuyển sang hạ
 tầng thật khi lên production chỉ là **đổi cấu hình**, không phải viết lại logic:
 
-1. **Database**: set biến môi trường `DATABASE_URL=postgres://user:pass@host:5432/dbname` trỏ
-   tới PostgreSQL thật (managed database của AWS RDS, Google Cloud SQL, hoặc cloud Việt Nam) —
-   `src/models/index.js` tự động dùng Postgres thay vì file SQLite cục bộ, không cần sửa route
-   nào khác. Chạy `npm run seed` một lần để khởi tạo dữ liệu mẫu trên DB thật (hoặc bỏ qua nếu
-   đã có dữ liệu thật).
+1. **Database**: set biến môi trường `DATABASE_URL` trỏ tới database thật —
+   `src/models/index.js` tự động nhận diện qua tiền tố URL, không cần sửa route nào khác:
+   - `mysql://user:pass@localhost:3306/dbname` — MySQL có sẵn trên shared hosting cPanel (dùng
+     `mysql2`, đã kiểm chứng thực tế: nhiều hosting shared không cài được `sqlite3` do lỗi biên
+     dịch/glibc, MySQL là lựa chọn thay thế hoạt động tốt).
+   - `postgres://user:pass@host:5432/dbname` — PostgreSQL thật (managed database của AWS RDS,
+     Google Cloud SQL, hoặc cloud Việt Nam) khi chạy trên hạ tầng cloud riêng.
+
+   Chạy `npm run seed` một lần để khởi tạo dữ liệu mẫu trên DB thật (hoặc bỏ qua nếu đã có dữ
+   liệu thật).
 2. **Session**: hiện lưu trong cùng database (đủ dùng cho 1 server). Khi chạy **nhiều server
    cùng lúc sau load balancer**, đổi sang Redis: cài `connect-redis` + `redis`, thay
    `SequelizeStore` trong `src/app.js` bằng `RedisStore`, trỏ tới Redis quản lý (AWS

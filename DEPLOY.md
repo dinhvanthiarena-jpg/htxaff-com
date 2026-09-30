@@ -48,8 +48,28 @@ Trong trang quản lý ứng dụng vừa tạo, tìm mục **Environment variab
 |---|---|
 | `SESSION_SECRET` | Một chuỗi bí mật ngẫu nhiên, tự gõ bừa 40-50 ký tự bất kỳ (chữ+số), không dùng lại giá trị mẫu trong code |
 
-Không cần thêm `DATABASE_URL` — web sẽ tự dùng SQLite tạo sẵn trong thư mục ứng dụng, đủ dùng
-cho 1 gian hàng chạy thật ở quy mô vừa và nhỏ.
+Mặc định web dùng SQLite tạo sẵn trong thư mục ứng dụng — đủ dùng cho 1 gian hàng chạy thật ở
+quy mô vừa và nhỏ, **nhưng nhiều hosting shared cPanel không cài được `sqlite3`** (module này cần
+biên dịch native, hay bị lỗi không tương thích glibc của server — lỗi thật đã gặp trên hosting
+3dvietpro). Nếu Bước 4 báo lỗi liên quan `sqlite3`, làm theo **Bước 3.5** dưới đây trước khi tiếp
+tục — không cần quay lại sửa code, chỉ cần thêm 1 biến môi trường.
+
+### Bước 3.5 — Dùng MySQL thay SQLite (khi `sqlite3` không cài được)
+
+Code đã hỗ trợ sẵn MySQL qua `mysql2` (không cần sửa gì), chỉ cần trỏ `DATABASE_URL` tới:
+
+1. Vào cPanel → **MySQL® Databases**, tạo 1 database mới và 1 user, gán user vào database với
+   quyền **ALL PRIVILEGES** (cPanel tự đặt tên dạng `tentaikhoan_tenapp`).
+2. Ghi lại: tên database, tên user, mật khẩu user (đặt mật khẩu mạnh, dùng nút "Password
+   Generator" của cPanel nếu có).
+3. Quay lại trang **Setup Node.js App**, thêm biến môi trường:
+
+   | Tên biến | Giá trị |
+   |---|---|
+   | `DATABASE_URL` | `mysql://TEN_USER:MAT_KHAU@localhost:3306/TEN_DATABASE` |
+
+   (thay `TEN_USER`, `MAT_KHAU`, `TEN_DATABASE` bằng giá trị thật ở bước 1-2; hầu hết cPanel
+   dùng `localhost` và cổng `3306` mặc định cho MySQL nội bộ cùng server)
 
 ## Bước 4 — Cài thư viện (npm install)
 
@@ -99,9 +119,10 @@ khẩu đã sao chép ở Bước 5.
 
 - **"Application Error" khi mở domain**: vào lại Setup Node.js App, xem log lỗi (thường có link
   "View log" ngay trang đó), thường do thiếu biến môi trường hoặc npm install chưa xong.
-- **npm install báo lỗi với `sqlite3`**: hiếm gặp trên hosting Linux tiêu chuẩn, nhưng nếu xảy ra,
-  báo em đoạn lỗi cụ thể để đổi sang giải pháp khác (ví dụ dùng `better-sqlite3` hoặc PostgreSQL
-  nếu 3dvietpro có hỗ trợ).
+- **npm install báo lỗi với `sqlite3`**: khá thường gặp trên shared hosting cPanel (module cần
+  biên dịch native, không tương thích glibc của một số server) — làm theo **Bước 3.5** ở trên để
+  đổi sang MySQL (đã hỗ trợ sẵn trong code qua `mysql2`, không cần sửa gì thêm), rồi chạy lại
+  npm install.
 - **Domain chưa chạy dù đã làm hết các bước**: kiểm tra lại DNS ở Bước 0, dùng công cụ
   https://dnschecker.org gõ `htxaff.com` để xem DNS đã lan truyền đến hosting chưa.
 
