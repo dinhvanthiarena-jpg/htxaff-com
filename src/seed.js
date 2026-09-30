@@ -14,6 +14,10 @@ function id() {
   return nanoid(10);
 }
 
+// Demo passwords come from env vars so no real credential ever lives in source control.
+// Falls back to a random one-time password printed at the end if not set.
+const DEMO_PASSWORD = process.env.SEED_PASSWORD || nanoid(12);
+
 async function seed() {
   await syncModels();
 
@@ -25,7 +29,7 @@ async function seed() {
     id: shopId,
     email: 'dinhnam0103@gmail.com',
     phone: '0901234567',
-    passwordHash: bcrypt.hashSync('123456', 10),
+    passwordHash: bcrypt.hashSync(DEMO_PASSWORD, 10),
     shopName: 'Nam Phát Wholesale Store',
     shopLogo: '',
     businessType: 'Hộ kinh doanh cá thể',
@@ -64,12 +68,12 @@ async function seed() {
   const members = [
     {
       id: id(), shopId, name: 'Trần Văn Sales', email: 'sales@htxaff.demo', phone: '0911111111',
-      passwordHash: bcrypt.hashSync('123456', 10), role: 'sales', roleLabel: ROLE_PRESETS.sales.label,
+      passwordHash: bcrypt.hashSync(DEMO_PASSWORD, 10), role: 'sales', roleLabel: ROLE_PRESETS.sales.label,
       permissions: ROLE_PRESETS.sales.permissions, status: 'active', createdAt: dayjs().subtract(60, 'day').toISOString()
     },
     {
       id: id(), shopId, name: 'Lê Thị Kế Toán', email: 'ketoan@htxaff.demo', phone: '0922222222',
-      passwordHash: bcrypt.hashSync('123456', 10), role: 'accountant', roleLabel: ROLE_PRESETS.accountant.label,
+      passwordHash: bcrypt.hashSync(DEMO_PASSWORD, 10), role: 'accountant', roleLabel: ROLE_PRESETS.accountant.label,
       permissions: ROLE_PRESETS.accountant.permissions, status: 'active', createdAt: dayjs().subtract(40, 'day').toISOString()
     }
   ];
@@ -321,10 +325,14 @@ async function seed() {
   await Transaction.bulkCreate(transactions);
 
   console.log('Seed thành công!');
-  console.log('Đăng nhập demo:');
-  console.log('  Chủ gian hàng: dinhnam0103@gmail.com / 123456');
-  console.log('  Nhân viên bán hàng: sales@htxaff.demo / 123456');
-  console.log('  Kế toán: ketoan@htxaff.demo / 123456');
+  console.log('Đăng nhập demo (mật khẩu giống nhau cho cả 3 tài khoản):');
+  console.log('  Chủ gian hàng:       dinhnam0103@gmail.com');
+  console.log('  Nhân viên bán hàng:  sales@htxaff.demo');
+  console.log('  Kế toán:             ketoan@htxaff.demo');
+  console.log(`  Mật khẩu: ${DEMO_PASSWORD}`);
+  if (!process.env.SEED_PASSWORD) {
+    console.log('  (Mật khẩu ngẫu nhiên vì chưa đặt biến môi trường SEED_PASSWORD — LƯU LẠI ngay, sẽ không hiện lại lần sau.)');
+  }
 }
 
 seed()

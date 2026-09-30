@@ -49,13 +49,16 @@ npm run dev     # chạy với nodemon, hoặc: npm start
 
 Truy cập http://localhost:3000
 
-**Tài khoản demo** (dữ liệu mẫu tự tạo trong `data/db.json`, không liên quan tài khoản thật):
+**Tài khoản demo** (dữ liệu mẫu tự tạo trong `data/app.db`, không liên quan tài khoản thật).
+Mật khẩu **không cố định trong code** — `npm run seed` tự sinh 1 mật khẩu ngẫu nhiên dùng chung
+cho cả 3 tài khoản và in ra màn hình sau khi chạy xong (lưu lại ngay). Muốn tự đặt mật khẩu cố
+định, set biến môi trường `SEED_PASSWORD` trước khi chạy seed.
 
-| Vai trò | Email | Mật khẩu | Quyền truy cập |
-|---|---|---|---|
-| Chủ gian hàng | `dinhnam0103@gmail.com` | `123456` | Toàn quyền |
-| Nhân viên bán hàng | `sales@htxaff.demo` | `123456` | Đơn hàng, Sản phẩm, Khách hàng, Feed/Tin nhắn, Giảm giá, Đánh giá, RFQ |
-| Kế toán | `ketoan@htxaff.demo` | `123456` | Tài chính, Thống kê |
+| Vai trò | Email | Quyền truy cập |
+|---|---|---|
+| Chủ gian hàng | `dinhnam0103@gmail.com` | Toàn quyền |
+| Nhân viên bán hàng | `sales@htxaff.demo` | Đơn hàng, Sản phẩm, Khách hàng, Feed/Tin nhắn, Giảm giá, Đánh giá, RFQ |
+| Kế toán | `ketoan@htxaff.demo` | Tài chính, Thống kê |
 
 Chủ gian hàng vào **Cài đặt → Thành viên gian hàng** để thêm/sửa/khoá nhân viên và tuỳ chỉnh quyền theo từng module.
 

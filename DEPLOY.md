@@ -65,9 +65,20 @@ Trên trang quản lý ứng dụng, tìm nút mở **terminal/console** cho ứ
 node src/seed.js
 ```
 
-Lệnh này tạo tài khoản chủ gian hàng demo và dữ liệu mẫu. Nếu thầy muốn bắt đầu với dữ liệu
-trắng hoàn toàn (không có sản phẩm/đơn hàng mẫu), báo em để em chuẩn bị 1 phiên bản seed rút
-gọn chỉ tạo tài khoản đăng nhập.
+Lệnh này tạo tài khoản chủ gian hàng demo và dữ liệu mẫu. **Mật khẩu không còn cố định trong
+code nữa** — mỗi lần chạy lệnh này, hệ thống tự sinh 1 mật khẩu ngẫu nhiên và in ra ngay sau khi
+chạy xong, dạng:
+
+```
+Mật khẩu: aB3xK9mZpQ2r
+```
+
+**Sao chép lại mật khẩu đó ngay** (không hiện lại lần sau trừ khi chạy lại seed). Nếu muốn tự đặt
+mật khẩu cố định thay vì để hệ thống sinh ngẫu nhiên, thêm biến môi trường `SEED_PASSWORD` ở
+Bước 3 trước khi chạy lệnh này.
+
+Nếu thầy muốn bắt đầu với dữ liệu trắng hoàn toàn (không có sản phẩm/đơn hàng mẫu), báo em để
+em chuẩn bị 1 phiên bản seed rút gọn chỉ tạo tài khoản đăng nhập.
 
 ## Bước 6 — Khởi động ứng dụng
 
@@ -81,12 +92,8 @@ cấp được chứng chỉ.
 
 ## Bước 8 — Kiểm tra
 
-Mở trình duyệt vào `https://htxaff.com`, đăng nhập bằng:
-- Email: `dinhnam0103@gmail.com`
-- Mật khẩu: `123456`
-
-**Đổi mật khẩu này ngay sau khi kiểm tra xong**, vì đây là mật khẩu demo đã xuất hiện trong
-nhiều đoạn hội thoại/tài liệu, không an toàn để giữ nguyên trên web thật.
+Mở trình duyệt vào `https://htxaff.com`, đăng nhập bằng email `dinhnam0103@gmail.com` và mật
+khẩu đã sao chép ở Bước 5.
 
 ## Nếu gặp lỗi
 
