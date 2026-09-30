@@ -22,6 +22,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.0",
     "multer": "^2.0.0",
+    "mysql2": "^3.24.5",
     "nanoid": "^3.3.7",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1"
