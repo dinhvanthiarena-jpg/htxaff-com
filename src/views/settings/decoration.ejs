@@ -1,0 +1,44 @@
+<div class="page-header"><h1>Cài đặt</h1></div>
+<%- include('../partials/settings-tabs') %>
+
+<% if (typeof saved !== 'undefined' && saved) { %><div class="badge badge-success" style="margin-bottom:12px; display:inline-block;">Đã lưu thay đổi</div><% } %>
+
+<div class="card">
+  <h3 style="margin-top:0;">Trang trí gian hàng</h3>
+  <div class="page-sub" style="margin-bottom:14px;">Chọn màu chủ đạo hiển thị trên trang gian hàng công khai của bạn.</div>
+  <form action="/settings/decoration/theme" method="POST" style="display:flex; gap:12px; flex-wrap:wrap;">
+    <% const themes = [['orange','#F58220'],['blue','#2563EB'],['green','#16A34A'],['pink','#DB2777']]; %>
+    <% themes.forEach(([key, color]) => { %>
+      <label style="display:flex; align-items:center; gap:8px; font-weight:400; cursor:pointer;">
+        <input type="radio" name="theme" value="<%= key %>" style="width:auto;" <%= (shop.shopTheme || 'orange')===key ? 'checked' : '' %> onchange="this.form.submit()" />
+        <span style="width:22px; height:22px; border-radius:50%; background:<%= color %>; display:inline-block; border:2px solid #fff; box-shadow:0 0 0 1px var(--border);"></span>
+      </label>
+    <% }) %>
+  </form>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Cài đặt banner</h3>
+  <div class="page-sub" style="margin-bottom:14px;">Banner hiển thị dạng slide trên đầu trang gian hàng công khai (tối đa 5 banner).</div>
+
+  <% const banners = shop.banners || []; %>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+    <% banners.forEach(b => { %>
+      <div style="position:relative;">
+        <div class="thumb" style="width:160px; height:80px;"><img src="<%= b.image %>" alt="" /></div>
+        <form action="/settings/decoration/banners/<%= b.id %>/delete" method="POST" style="position:absolute; top:4px; right:4px;">
+          <button class="btn btn-sm btn-danger" style="padding:2px 8px;">×</button>
+        </form>
+      </div>
+    <% }) %>
+    <% if (!banners.length) { %><div class="text-muted">Chưa có banner nào</div><% } %>
+  </div>
+
+  <% if (banners.length < 5) { %>
+    <form action="/settings/decoration/banners" method="POST" enctype="multipart/form-data" style="display:flex; gap:8px; align-items:center;">
+      <input type="file" name="banner" accept="image/*" required />
+      <input type="text" name="link" placeholder="Link khi bấm vào banner (không bắt buộc)" style="max-width:280px;" />
+      <button class="btn btn-primary btn-sm">Thêm banner</button>
+    </form>
+  <% } %>
+</div>

@@ -1,0 +1,71 @@
+<div class="page-header"><h1>Đăng tin</h1></div>
+<div class="page-sub" style="margin-bottom:14px;">Đăng tin tìm nhà phân phối, tìm đại lý, tuyển cộng tác viên</div>
+
+<div class="card" style="background:var(--brand-light); border:none; margin-bottom:16px;">
+  <strong>Để được KIỂM DUYỆT, nội dung tin cần có:</strong>
+  <ul style="margin:10px 0 0; padding-left:20px; font-size:13.5px; line-height:1.8;">
+    <li>Mô tả về doanh nghiệp</li>
+    <li>Mô tả về sản phẩm</li>
+    <li>Chính sách &amp; quyền lợi khi trở thành NPP, Đại Lý, CTV</li>
+    <li>Hình ảnh cửa hàng, kho hàng, nhà xưởng</li>
+  </ul>
+</div>
+
+<form class="card" method="POST" action="/recruitment/new" style="max-width:600px;">
+  <div class="form-row">
+    <div class="form-group">
+      <label>Nhu cầu</label>
+      <select name="type">
+        <option>Tìm nhà phân phối</option>
+        <option>Tìm đại lý</option>
+        <option>Tuyển CTV</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Khu vực ưu tiên</label>
+      <input type="text" name="region" placeholder="VD: Toàn quốc, Miền Tây..." value="Toàn quốc" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Ngày hết hạn</label>
+      <input type="date" name="expiresAt" />
+    </div>
+    <div class="form-group">
+      <label>Danh mục</label>
+      <select name="categoryId">
+        <% categories.forEach(c => { %>
+          <option value="<%= c.id %>"><%= c.name %></option>
+        <% }) %>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Tiêu đề tin đăng</label>
+    <input type="text" name="title" placeholder="VD: Tuyển đại lý phân phối mỹ phẩm toàn quốc" required />
+  </div>
+
+  <div class="form-group">
+    <label>Nội dung tin đăng (tối thiểu 100 từ)</label>
+    <textarea name="description" placeholder="Giới thiệu doanh nghiệp, sản phẩm và chính sách & quyền lợi khi trở thành NPP, Đại Lý, CTV. Không nhập thông tin liên hệ vào đây." style="min-height:120px;"></textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Số điện thoại liên hệ</label>
+      <input type="tel" name="contactPhone" />
+    </div>
+    <div class="form-group">
+      <label>Hành động</label>
+      <select name="cta">
+        <option>Đăng ký ngay</option>
+        <option>Tìm hiểu thêm</option>
+        <option>Tải báo giá</option>
+      </select>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Đăng tin</button>
+</form>

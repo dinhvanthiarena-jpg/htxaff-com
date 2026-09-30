@@ -1,0 +1,128 @@
+<div class="page-header"><h1>Cài đặt</h1></div>
+<%- include('../partials/settings-tabs') %>
+
+<% if (saved) { %><div class="badge badge-success" style="margin-bottom:12px; display:inline-block;">Đã lưu thay đổi</div><% } %>
+
+<form method="POST" action="/settings/general">
+
+  <div class="card">
+    <h3 style="margin-top:0;">Thông tin thuế</h3>
+    <div class="page-sub" style="margin-bottom:10px;">Cài đặt thông tin thuế theo Luật an ninh mạng, Văn bản hợp nhất số 14/VBHN-BCT hợp nhất nghị định về thương mại điện tử.</div>
+    <input type="text" name="taxInfo" value="<%= shop.taxInfo || '' %>" placeholder="Mã số thuế hộ kinh doanh/doanh nghiệp" style="max-width:360px;" />
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Chế độ tạm nghỉ</h3>
+    <div class="page-sub" style="margin-bottom:10px;">Kích hoạt Chế độ Tạm nghỉ để ngăn khách hàng đặt đơn hàng mới. Những đơn hàng đang tiến hành vẫn phải được xử lý.</div>
+    <label style="display:flex; align-items:center; gap:8px; font-weight:600;">
+      <input type="checkbox" name="vacationMode" style="width:auto;" <%= shop.vacationMode ? 'checked' : '' %> /> Bật chế độ tạm nghỉ
+    </label>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Ẩn giá sản phẩm</h3>
+    <div class="page-sub" style="margin-bottom:10px;">
+      Sử dụng tính năng này nếu bạn không muốn công khai giá sản phẩm chi tiết. Khi bật: áp dụng cho toàn bộ sản phẩm,
+      bạn sẽ chỉ nhận được lượt hỏi mua/nhắn tin thay vì đơn hàng trực tiếp.
+    </div>
+    <label style="display:flex; align-items:center; gap:8px; font-weight:600; margin-bottom:10px;">
+      <input type="checkbox" name="hidePrices" style="width:auto;" <%= shop.hidePrices ? 'checked' : '' %> /> Ẩn giá sản phẩm
+    </label>
+    <label style="display:flex; align-items:center; gap:8px; font-weight:600;">
+      <input type="checkbox" name="negotiablePrice" style="width:auto;" <%= shop.negotiablePrice ? 'checked' : '' %> />
+      Liên hệ để nhận giá tốt hơn (hiển thị nhãn "Có thể thương lượng")
+    </label>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Chính sách bán hàng</h3>
+    <div class="page-sub" style="margin-bottom:10px;">Chính sách này sẽ được áp dụng khi khách hàng thao tác đặt hàng.</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Số lượng sản phẩm tối thiểu</label>
+        <input type="number" name="minOrderQty" value="<%= shop.minOrderQty || 0 %>" min="0" />
+      </div>
+      <div class="form-group">
+        <label>Giá trị đơn hàng tối thiểu (đ)</label>
+        <input type="number" name="minOrderValue" value="<%= shop.minOrderValue || 0 %>" min="0" />
+      </div>
+    </div>
+    <textarea name="salesPolicy" placeholder="Chính sách đổi trả, bảo hành..."><%= shop.salesPolicy || '' %></textarea>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Thanh toán khi nhận hàng (COD)</h3>
+    <div class="page-sub" style="margin-bottom:10px;">Bạn có thể bật phương thức thanh toán khi nhận hàng dựa vào giá trị đơn hàng &amp; phí vận chuyển.</div>
+    <label style="display:flex; align-items:center; gap:8px; font-weight:600; margin-bottom:12px;">
+      <input type="checkbox" name="codEnabled" style="width:auto;" <%= shop.codEnabled ? 'checked' : '' %> /> Cho phép thanh toán khi nhận hàng
+    </label>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phí vận chuyển tối đa cho phép COD (đ)</label>
+        <input type="number" name="codMaxShippingFee" value="<%= shop.codMaxShippingFee || 0 %>" min="0" placeholder="0 = không giới hạn" />
+      </div>
+      <div class="form-group">
+        <label>Giá trị đơn tối đa cho phép COD (đ)</label>
+        <input type="number" name="codMaxOrderValue" value="<%= shop.codMaxOrderValue || 0 %>" min="0" placeholder="0 = không giới hạn" />
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Tin nhắn trả lời tự động</h3>
+    <div class="page-sub" style="margin-bottom:10px;">Trả lời tự động mặc định sẽ chỉ được kích hoạt 24 giờ một lần cho mỗi người mua.</div>
+    <label style="display:flex; align-items:center; gap:8px; font-weight:600; margin-bottom:10px;">
+      <input type="checkbox" name="autoReplyEnabled" style="width:auto;" <%= shop.autoReplyEnabled ? 'checked' : '' %> /> Bật trả lời tin nhắn tự động
+    </label>
+    <textarea name="autoReplyMessage" maxlength="600" placeholder="Nội dung trả lời tự động (tối đa 600 ký tự)"><%= shop.autoReplyMessage || '' %></textarea>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Thông tin công ty</h3>
+    <div class="page-sub" style="margin-bottom:10px;">Chi tiết hồ sơ công ty</div>
+    <div class="form-row">
+      <div class="form-group"><label>Tên công ty</label><input type="text" name="companyName" value="<%= shop.company ? shop.company.name : '' %>" /></div>
+      <div class="form-group"><label>Mã số thuế</label><input type="text" name="taxCode" value="<%= shop.company ? shop.company.taxCode : '' %>" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Vốn đăng ký (đ)</label><input type="number" name="capital" value="<%= shop.company ? shop.company.capital : '' %>" min="0" /></div>
+      <div class="form-group"><label>Số lượng nhân sự</label><input type="text" name="employeeCount" value="<%= shop.company ? shop.company.employeeCount : '' %>" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Năm thành lập</label><input type="text" name="foundedYear" value="<%= shop.company ? shop.company.foundedYear : '' %>" /></div>
+      <div class="form-group"><label>Quy mô nhà máy</label><input type="text" name="factoryScale" value="<%= shop.company ? shop.company.factoryScale : '' %>" /></div>
+    </div>
+    <div class="form-group"><label>Giới thiệu tổng quan</label><textarea name="companyOverview"><%= shop.company ? shop.company.overview : '' %></textarea></div>
+    <div class="form-group"><label>Địa chỉ đăng ký kinh doanh</label><input type="text" name="businessAddress" value="<%= shop.company ? shop.company.businessAddress : '' %>" /></div>
+    <div class="form-group"><label>Ngành nghề kinh doanh</label><input type="text" name="businessLine" value="<%= shop.company ? shop.company.businessLine : '' %>" /></div>
+    <div class="form-group">
+      <label>Mô hình kinh doanh</label>
+      <select name="businessModel">
+        <option value="">--Chọn một</option>
+        <% ['Sản xuất','Thương mại','Đại lý','Nhà phân phối','Nhà bán sỉ','Dịch vụ kinh doanh'].forEach(m => { %>
+          <option value="<%= m %>" <%= shop.company && shop.company.businessModel===m ? 'selected' : '' %>><%= m %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="form-group"><label>Sản phẩm chính</label><input type="text" name="mainProducts" value="<%= shop.company ? shop.company.mainProducts : '' %>" /></div>
+    <div class="form-group"><label>Địa chỉ nhà máy</label><input type="text" name="factoryAddress" value="<%= shop.company ? shop.company.factoryAddress : '' %>" /></div>
+    <label style="display:flex; align-items:center; gap:8px; font-weight:600;">
+      <input type="checkbox" name="allowCustomization" style="width:auto;" <%= shop.company && shop.company.allowCustomization ? 'checked' : '' %> />
+      Cho phép tùy biến sản phẩm theo nhu cầu
+    </label>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Lưu</button>
+</form>
+
+<div class="card" style="margin-top:16px;">
+  <h3 style="margin-top:0;">Xóa tài khoản</h3>
+  <p class="page-sub">Gửi yêu cầu xóa tài khoản và ngưng sử dụng các dịch vụ trên HTXAFF.com</p>
+  <% if (shop.deleteRequested) { %>
+    <span class="badge badge-warning">Yêu cầu đang được xử lý</span>
+  <% } else { %>
+    <form action="/settings/delete-account-request" method="POST" data-confirm="Bạn chắc chắn muốn gửi yêu cầu xóa tài khoản?">
+      <button class="btn btn-danger">Yêu cầu xóa tài khoản</button>
+    </form>
+  <% } %>
+</div>

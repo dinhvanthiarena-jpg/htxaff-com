@@ -1,0 +1,21 @@
+<%
+const map = {
+  pending_confirm: { cls: 'badge-warning', label: 'Chờ xác nhận' },
+  pending_payment: { cls: 'badge-warning', label: 'Chờ thanh toán' },
+  pending_pickup: { cls: 'badge-info', label: 'Chờ lấy hàng' },
+  shipping: { cls: 'badge-info', label: 'Đang giao' },
+  delivered: { cls: 'badge-success', label: 'Đã giao' },
+  cancelled: { cls: 'badge-danger', label: 'Đã hủy' },
+  return_refund: { cls: 'badge-danger', label: 'Trả hàng/Hoàn tiền' },
+  active: { cls: 'badge-success', label: 'Đang bán' },
+  hidden: { cls: 'badge-muted', label: 'Đã ẩn' },
+  pending: { cls: 'badge-warning', label: 'Chờ duyệt' },
+  running: { cls: 'badge-success', label: 'Đang chạy' },
+  scheduled: { cls: 'badge-info', label: 'Đang lên lịch' },
+  stopped: { cls: 'badge-muted', label: 'Đã dừng' },
+  quoted: { cls: 'badge-success', label: 'Đã báo giá' },
+  expired: { cls: 'badge-muted', label: 'Đã hết hạn' }
+};
+const s = map[status] || { cls: 'badge-muted', label: status };
+%>
+<span class="badge <%= s.cls %>"><%= s.label %></span>

@@ -1,0 +1,44 @@
+<div class="page-header"><h1>Số dư của tôi</h1></div>
+
+<div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px,1fr));">
+  <div class="stat-card">
+    <div class="stat-label">Tiền chờ đối soát</div>
+    <div class="stat-value"><%= formatMoney(pendingBalance) %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Tiền có thể rút</div>
+    <div class="stat-value accent"><%= formatMoney(withdrawableBalance) %></div>
+    <form action="/finance/withdraw" method="POST" style="margin-top:10px; display:flex; gap:6px;">
+      <input type="number" name="amount" placeholder="Số tiền muốn rút" max="<%= withdrawableBalance %>" style="max-width:160px;" />
+      <button class="btn btn-sm btn-primary" <%= withdrawableBalance<=0 ? 'disabled' : '' %>>Rút tiền</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tabs">
+    <a class="tab-item <%= tab==='pending'?'active':'' %>" href="/finance?tab=pending">Chờ đối soát</a>
+    <a class="tab-item <%= tab==='reconciled'?'active':'' %>" href="/finance?tab=reconciled">Đã đối soát</a>
+    <a class="tab-item <%= tab==='withdrawals'?'active':'' %>" href="/finance?tab=withdrawals">Lệnh rút</a>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Thời gian</th><th>Nội dung</th><th class="text-right">Số tiền</th></tr></thead>
+      <tbody>
+        <% if (!activeList.length) { %>
+          <tr><td colspan="3"><div class="empty-state"><div class="emoji">💰</div>Chưa có giao dịch nào</div></td></tr>
+        <% } %>
+        <% activeList.forEach(t => { %>
+          <tr>
+            <td class="text-muted"><%= dayjs(t.at).format('DD/MM/YYYY HH:mm') %></td>
+            <td><%= t.content %></td>
+            <td class="text-right" style="color: <%= t.amount < 0 ? 'var(--danger)' : 'var(--success)' %>;">
+              <%= t.amount < 0 ? '-' : '+' %><%= formatMoney(Math.abs(t.amount)) %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

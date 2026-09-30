@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng nhập - HTXAFF.com</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-topbar">
+      <div class="logo-badge">HTX</div>
+      <div class="brand-title">htxaff<span style="color:var(--brand)">.com</span></div>
+      <div class="divider"></div>
+      <div class="page-name">Kênh bán hàng</div>
+    </div>
+
+    <div class="auth-body">
+      <div class="auth-hero">
+        <h1>Tiếp cận hàng triệu khách sỉ</h1>
+        <p>Với hơn 1 triệu thành viên tham gia, đây là kênh tốt nhất để doanh nghiệp của bạn tìm kiếm nhà phân phối, đại lý trên toàn quốc. Đăng bán hoàn toàn miễn phí.</p>
+      </div>
+
+      <div class="auth-card">
+        <h2>ĐĂNG NHẬP</h2>
+        <% if (error) { %>
+          <div class="auth-error"><%= error %></div>
+        <% } %>
+        <form method="POST" action="/login">
+          <div class="form-group">
+            <label>Số điện thoại hoặc Email</label>
+            <input type="text" name="identifier" placeholder="Số điện thoại hoặc Email đã đăng ký" required />
+          </div>
+          <div class="form-group" style="margin-bottom:6px;">
+            <label>Mật khẩu</label>
+            <input type="password" name="password" placeholder="Mật khẩu" required />
+          </div>
+          <a href="#" class="forgot-link">Quên mật khẩu?</a>
+          <button type="submit" class="btn btn-primary">ĐĂNG NHẬP</button>
+        </form>
+        <div class="auth-footer">
+          Bạn chưa có tài khoản? <a href="/register">Đăng ký ngay →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

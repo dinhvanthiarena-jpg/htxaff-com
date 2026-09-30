@@ -1,0 +1,95 @@
+<div class="page-header"><h1>Chương trình giảm giá</h1></div>
+
+<form class="card" method="POST" action="/promotions/new">
+  <div class="form-group">
+    <label>Tên chương trình</label>
+    <input type="text" name="name" placeholder="VD: Giảm 10% cho khách sỉ mới" required />
+  </div>
+
+  <div class="form-group">
+    <label>Phương thức giảm giá</label>
+    <select name="method" id="promo-method">
+      <option value="auto">Giảm giá tự động</option>
+      <option value="code">Nhập mã giảm giá</option>
+    </select>
+  </div>
+  <div class="form-group" id="promo-code-wrap">
+    <label>Mã giảm giá</label>
+    <input type="text" name="code" placeholder="VD: SIMOI10" />
+  </div>
+
+  <div class="form-group">
+    <label>Nguồn đơn áp dụng</label>
+    <select name="orderSource">
+      <option value="all">Tất cả</option>
+      <option value="web">Chỉ website</option>
+      <option value="zalo">Chỉ Zalo Mini App</option>
+      <option value="dropship">Chỉ Dropship</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Loại giảm giá</label>
+      <select name="type">
+        <option value="percent">Theo phần trăm</option>
+        <option value="fixed">Theo số tiền</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Giá trị giảm giá</label>
+      <input type="number" name="value" min="0" required />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Yêu cầu mua hàng tối thiểu</label>
+    <select name="minReqType" id="promo-minreq">
+      <option value="none">Không có yêu cầu</option>
+      <option value="value">Số tiền mua hàng tối thiểu</option>
+      <option value="qty">Số lượng sản phẩm tối thiểu</option>
+    </select>
+  </div>
+  <div class="form-row" id="promo-minreq-inputs">
+    <div class="form-group">
+      <label>Số tiền tối thiểu (đ)</label>
+      <input type="number" name="minOrderValue" min="0" value="0" />
+    </div>
+    <div class="form-group">
+      <label>Số lượng sản phẩm tối thiểu</label>
+      <input type="number" name="minOrderQty" min="0" value="0" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label style="display:flex; align-items:center; gap:8px;">
+      <input type="checkbox" name="hasUsageLimit" id="promo-has-limit" style="width:auto;" checked /> Giới hạn số lần sử dụng
+    </label>
+    <input type="number" name="usageLimit" min="1" value="100" placeholder="Số lần" id="promo-limit-input" style="max-width:160px; margin-top:8px;" />
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Ngày bắt đầu</label>
+      <input type="date" name="startDate" required />
+    </div>
+    <div class="form-group">
+      <label>Ngày kết thúc</label>
+      <input type="date" name="endDate" required />
+    </div>
+  </div>
+
+  <div style="display:flex; gap:10px;">
+    <button type="submit" class="btn btn-primary">Lưu lại</button>
+    <a href="/promotions" class="btn">Hủy</a>
+  </div>
+</form>
+
+<script>
+  document.getElementById('promo-method').addEventListener('change', function () {
+    document.getElementById('promo-code-wrap').style.display = this.value === 'code' ? 'block' : 'none';
+  });
+  document.getElementById('promo-has-limit').addEventListener('change', function () {
+    document.getElementById('promo-limit-input').style.display = this.checked ? 'block' : 'none';
+  });
+</script>

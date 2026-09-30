@@ -1,0 +1,17 @@
+<div class="page-header"><h1>Cài đặt</h1></div>
+<%- include('../partials/settings-tabs') %>
+
+<% if (saved) { %><div class="badge badge-success" style="margin-bottom:12px; display:inline-block;">Đã đổi mật khẩu</div><% } %>
+<% if (error) { %><div class="auth-error"><%= error %></div><% } %>
+
+<form class="card" method="POST" action="/settings/security" style="max-width:420px;">
+  <div class="form-group">
+    <label>Mật khẩu hiện tại</label>
+    <input type="password" name="currentPassword" required />
+  </div>
+  <div class="form-group">
+    <label>Mật khẩu mới</label>
+    <input type="password" name="newPassword" minlength="6" required />
+  </div>
+  <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+</form>

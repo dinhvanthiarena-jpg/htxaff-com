@@ -1,0 +1,33 @@
+<div class="page-header"><h1>Yêu cầu báo giá</h1></div>
+
+<div class="card">
+  <div class="tabs">
+    <a class="tab-item" href="/rfqs">Tất cả yêu cầu</a>
+    <a class="tab-item" href="/rfqs/quotations">Báo giá đã gửi</a>
+    <a class="tab-item" href="/rfqs/notifications">Cài đặt nhận thông báo</a>
+  </div>
+
+  <% if (purchased) { %>
+    <div class="badge badge-success" style="margin-bottom:14px; display:inline-block;">Mua lượt báo giá thành công!</div>
+  <% } %>
+
+  <h3 style="margin-top:0;">Mua thêm lượt báo giá</h3>
+  <div class="page-sub" style="margin-bottom:16px;">
+    Hiện bạn có thêm <strong><%= shop.extraRfqQuota || 0 %></strong> lượt báo giá cộng thêm ngoài hạn mức hàng tháng.
+    (Đây là tính năng mô phỏng cho mục đích demo — không phát sinh giao dịch thanh toán thật.)
+  </div>
+
+  <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px,1fr));">
+    <% packages.forEach(p => { %>
+      <div class="stat-card" style="text-align:center;">
+        <div class="stat-value accent">+<%= p.qty %></div>
+        <div class="stat-label">lượt báo giá</div>
+        <div style="margin:10px 0; font-weight:700;"><%= formatMoney(p.price) %></div>
+        <form action="/rfqs/buy-quota" method="POST">
+          <input type="hidden" name="packageId" value="<%= p.id %>" />
+          <button type="submit" class="btn btn-primary btn-sm" style="width:100%;">Mua ngay</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+</div>

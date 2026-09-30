@@ -1,0 +1,33 @@
+<%
+// Expects: chartId, series (array of {label, value}), chartColor (optional)
+const _color = typeof chartColor !== 'undefined' ? chartColor : '#F58220';
+const _w = 640, _h = 200, _pad = 24;
+const _max = Math.max(1, ...series.map(d => d.value));
+const _stepX = series.length > 1 ? (_w - _pad * 2) / (series.length - 1) : 0;
+const _points = series.map((d, i) => {
+  const x = _pad + i * _stepX;
+  const y = _h - _pad - (d.value / _max) * (_h - _pad * 2);
+  return { x, y, label: d.label, value: d.value };
+});
+const _polyPoints = _points.map(p => `${p.x},${p.y}`).join(' ');
+const _areaPoints = `${_pad},${_h - _pad} ` + _polyPoints + ` ${_pad + (series.length - 1) * _stepX},${_h - _pad}`;
+%>
+<div class="line-chart-wrap" style="position:relative;">
+  <svg viewBox="0 0 <%= _w %> <%= _h %>" style="width:100%; height:200px; overflow:visible;">
+    <polygon points="<%= _areaPoints %>" fill="<%= _color %>" opacity="0.08"></polygon>
+    <polyline points="<%= _polyPoints %>" fill="none" stroke="<%= _color %>" stroke-width="2"></polyline>
+    <% _points.forEach((p, i) => { %>
+      <circle cx="<%= p.x %>" cy="<%= p.y %>" r="4" fill="<%= _color %>"
+        style="cursor:pointer;"
+        onmouseenter="showChartTooltip(event, '<%= p.label %>', '<%= p.value.toLocaleString('vi-VN') %>', '<%= chartId %>')"
+        onmouseleave="hideChartTooltip('<%= chartId %>')"></circle>
+    <% }) %>
+  </svg>
+  <div id="tooltip-<%= chartId %>" class="chart-tooltip" style="display:none;"></div>
+  <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-top:4px;">
+    <% const labelStep = Math.ceil(series.length / 8); %>
+    <% series.forEach((d, i) => { %>
+      <% if (i % labelStep === 0 || i === series.length - 1) { %><span><%= d.label %></span><% } %>
+    <% }) %>
+  </div>
+</div>

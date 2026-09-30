@@ -1,0 +1,89 @@
+<div class="page-header">
+  <div>
+    <h1>Đơn hàng & Hỏi mua</h1>
+    <div class="page-sub">Tổng <%= pagination.total %> đơn hàng phù hợp</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tabs">
+    <% const tabs = [['all','Tất cả đơn'],['pending_confirm','Chờ xác nhận'],['pending_payment','Chờ thanh toán'],['pending_pickup','Chờ lấy hàng'],['shipping','Đang giao'],['delivered','Đã giao'],['cancelled','Đã hủy'],['return_refund','Trả hàng/Hoàn tiền']]; %>
+    <% tabs.forEach(([key,label]) => { %>
+      <a class="tab-item <%= filters.status===key ? 'active' : '' %>" href="/orders?status=<%= key %>">
+        <%= label %> <span class="tab-count">(<%= tabCounts[key] %>)</span>
+      </a>
+    <% }) %>
+  </div>
+
+  <form class="toolbar auto-submit" method="GET" action="/orders">
+    <input type="hidden" name="status" value="<%= filters.status %>" />
+    <input type="text" class="search-input" name="q" value="<%= filters.q %>" placeholder="Tìm mã đơn, tên hoặc SĐT khách..." />
+    <select name="channel">
+      <option value="all" <%= filters.channel==='all'?'selected':'' %>>Loại đơn: Tất cả</option>
+      <option value="web" <%= filters.channel==='web'?'selected':'' %>>Website</option>
+      <option value="zalo" <%= filters.channel==='zalo'?'selected':'' %>>Zalo Mini App</option>
+      <option value="dropship" <%= filters.channel==='dropship'?'selected':'' %>>Dropship</option>
+    </select>
+    <select name="sort">
+      <option value="newest" <%= filters.sort==='newest'?'selected':'' %>>Mới nhất</option>
+      <option value="oldest" <%= filters.sort==='oldest'?'selected':'' %>>Cũ nhất</option>
+      <option value="value_desc" <%= filters.sort==='value_desc'?'selected':'' %>>Giá trị giảm dần</option>
+      <option value="value_asc" <%= filters.sort==='value_asc'?'selected':'' %>>Giá trị tăng dần</option>
+    </select>
+    <button type="submit" class="btn btn-sm">Lọc</button>
+  </form>
+
+  <form action="/orders/bulk-ship" method="POST">
+    <div class="toolbar" style="justify-content:space-between;">
+      <label style="display:flex; align-items:center; gap:8px; font-weight:600; font-size:13px;">
+        <input type="checkbox" id="select-all-orders" style="width:auto;" /> Chọn tất cả
+      </label>
+      <button type="submit" class="btn btn-sm btn-primary">🚚 Giao hàng loạt</button>
+    </div>
+    <div class="page-sub" style="margin-bottom:10px;">Chỉ áp dụng cho các đơn đang ở trạng thái "Chờ lấy hàng".</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th></th><th>Mã đơn</th><th>Khách hàng</th><th>Sản phẩm</th><th>Tổng tiền</th><th>Thanh toán</th><th>Trạng thái</th><th>Ngày đặt</th></tr>
+        </thead>
+        <tbody>
+          <% if (!orders.length) { %>
+            <tr><td colspan="8"><div class="empty-state"><div class="emoji">📋</div>Không có đơn hàng nào</div></td></tr>
+          <% } %>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td onclick="event.stopPropagation()">
+                <input type="checkbox" name="orderIds" value="<%= o.id %>" class="order-checkbox" style="width:auto;" <%= o.status!=='pending_pickup' ? 'disabled' : '' %> />
+              </td>
+              <td onclick="location.href='/orders/<%= o.id %>'" style="cursor:pointer;"><strong><%= o.code %></strong></td>
+              <td onclick="location.href='/orders/<%= o.id %>'" style="cursor:pointer;"><%= o.customer.name %><br/><span class="text-muted"><%= o.customer.phone %></span></td>
+              <td onclick="location.href='/orders/<%= o.id %>'" style="cursor:pointer;"><%= o.items.length %> sản phẩm</td>
+              <td onclick="location.href='/orders/<%= o.id %>'" style="cursor:pointer;"><%= formatMoney(o.total) %></td>
+              <td onclick="location.href='/orders/<%= o.id %>'" style="cursor:pointer;"><%= o.paymentMethod === 'cod' ? 'COD' : 'Chuyển khoản' %></td>
+              <td onclick="location.href='/orders/<%= o.id %>'" style="cursor:pointer;"><%- include('../partials/status-badge', { status: o.status }) %></td>
+              <td onclick="location.href='/orders/<%= o.id %>'" style="cursor:pointer;" class="text-muted"><%= dayjs(o.createdAt).format('DD/MM/YYYY HH:mm') %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </form>
+
+  <% if (pagination.totalPages > 1) { %>
+    <div class="pagination">
+      <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+        <a class="page-link <%= i===pagination.currentPage?'active':'' %>" href="/orders?page=<%= i %>&status=<%= filters.status %>&q=<%= filters.q %>&channel=<%= filters.channel %>&sort=<%= filters.sort %>"><%= i %></a>
+      <% } %>
+    </div>
+  <% } %>
+</div>
+
+<script>
+  var selectAll = document.getElementById('select-all-orders');
+  if (selectAll) {
+    selectAll.addEventListener('change', function () {
+      document.querySelectorAll('.order-checkbox:not(:disabled)').forEach(function (cb) { cb.checked = selectAll.checked; });
+    });
+  }
+</script>

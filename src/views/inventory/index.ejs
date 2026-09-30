@@ -1,0 +1,60 @@
+<div class="page-header">
+  <div>
+    <h1>Kho hàng</h1>
+    <div class="page-sub">Theo dõi và điều chỉnh tồn kho nhanh</div>
+  </div>
+</div>
+
+<div class="card">
+  <form class="toolbar auto-submit" method="GET" action="/inventory">
+    <input type="text" class="search-input" name="q" value="<%= filters.q %>" placeholder="Tìm theo tên hoặc SKU..." />
+    <select name="filter">
+      <option value="all" <%= filters.filter==='all'?'selected':'' %>>Tất cả</option>
+      <option value="low" <%= filters.filter==='low'?'selected':'' %>>Sắp hết hàng (≤ 20)</option>
+      <option value="out" <%= filters.filter==='out'?'selected':'' %>>Hết hàng</option>
+    </select>
+    <button type="submit" class="btn btn-sm">Lọc</button>
+  </form>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Sản phẩm</th><th>Danh mục</th><th>Tồn kho hiện tại</th><th>Điều chỉnh nhanh</th><th>Đặt số lượng mới</th></tr>
+      </thead>
+      <tbody>
+        <% if (!products.length) { %>
+          <tr><td colspan="5"><div class="empty-state"><div class="emoji">🏷️</div>Không có sản phẩm phù hợp</div></td></tr>
+        <% } %>
+        <% products.forEach(p => { %>
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="thumb"><% if (p.images && p.images[0]) { %><img src="<%= p.images[0] %>" alt="" /><% } else { %>🛍️<% } %></div>
+                <div><div class="p-name"><%= p.name %></div><div class="p-sku">SKU: <%= p.sku %></div></div>
+              </div>
+            </td>
+            <td><%= categoryMap[p.categoryId] || '—' %></td>
+            <td>
+              <% if (p.stock === 0) { %><span class="badge badge-danger">Hết hàng</span>
+              <% } else if (p.stock <= 20) { %><span class="badge badge-warning"><%= p.stock %> <%= p.unit %></span>
+              <% } else { %><span><%= p.stock %> <%= p.unit %></span><% } %>
+            </td>
+            <td>
+              <form action="/inventory/<%= p.id %>/adjust" method="POST" style="display:flex; gap:6px;">
+                <button class="btn btn-sm" name="delta" value="-1">-1</button>
+                <button class="btn btn-sm" name="delta" value="10">+10</button>
+                <button class="btn btn-sm" name="delta" value="50">+50</button>
+              </form>
+            </td>
+            <td>
+              <form action="/inventory/<%= p.id %>/set" method="POST" style="display:flex; gap:6px;">
+                <input type="number" name="stock" value="<%= p.stock %>" min="0" style="width:90px;" />
+                <button class="btn btn-sm btn-primary">Lưu</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

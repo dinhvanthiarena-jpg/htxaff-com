@@ -1,0 +1,93 @@
+<div class="page-header"><h1>Cài đặt</h1></div>
+<%- include('../partials/settings-tabs') %>
+
+<% if (saved) { %><div class="badge badge-success" style="margin-bottom:12px; display:inline-block;">Đã lưu thay đổi</div><% } %>
+
+<form class="card" method="POST" action="/settings/shop" enctype="multipart/form-data" style="max-width:640px;">
+  <div class="form-group">
+    <label>Ảnh bìa gian hàng</label>
+    <div class="thumb" style="width:100%; height:140px; margin-bottom:8px;">
+      <% if (shop.coverImage) { %><img src="<%= shop.coverImage %>" alt="" /><% } else { %>🖼️<% } %>
+    </div>
+    <input type="file" name="coverImage" accept="image/*" />
+  </div>
+
+  <div class="form-group">
+    <label>Logo gian hàng</label>
+    <div style="display:flex; align-items:center; gap:14px;">
+      <div class="thumb" style="width:60px;height:60px;">
+        <% if (shop.shopLogo) { %><img src="<%= shop.shopLogo %>" alt="" /><% } else { %>🏪<% } %>
+      </div>
+      <input type="file" name="shopLogo" accept="image/*" />
+    </div>
+  </div>
+
+  <div class="page-sub" style="margin-bottom:14px;">
+    Vui lòng không chèn các thông tin liên hệ như địa chỉ, số điện thoại vào logo, ảnh bìa &amp; các thông tin thông báo - giới thiệu gian hàng.
+  </div>
+
+  <h3>Thông tin cơ bản</h3>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Tên gian hàng</label>
+      <input type="text" name="shopName" value="<%= shop.shopName %>" required />
+    </div>
+    <div class="form-group">
+      <label>Email gian hàng</label>
+      <input type="email" name="shopEmail" value="<%= shop.shopEmail || '' %>" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>SĐT gian hàng</label>
+      <input type="tel" name="phone" value="<%= shop.phone %>" />
+    </div>
+    <div class="form-group">
+      <label>Loại hình kinh doanh</label>
+      <input type="text" name="businessType" value="<%= shop.businessType %>" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Phạm vi kinh doanh</label>
+    <select name="businessScope">
+      <option value="Toàn quốc" <%= shop.businessScope==='Toàn quốc' || !shop.businessScope ? 'selected' : '' %>>Toàn quốc</option>
+      <option value="Miền Bắc" <%= shop.businessScope==='Miền Bắc' ? 'selected' : '' %>>Miền Bắc</option>
+      <option value="Miền Trung" <%= shop.businessScope==='Miền Trung' ? 'selected' : '' %>>Miền Trung</option>
+      <option value="Miền Nam" <%= shop.businessScope==='Miền Nam' ? 'selected' : '' %>>Miền Nam</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Địa chỉ kho hàng</label>
+    <div class="form-row">
+      <select name="addressProvince">
+        <option value="">Chọn Tỉnh/Thành</option>
+        <% provinces.forEach(p => { %>
+          <option value="<%= p %>" <%= shop.addressProvince===p ? 'selected' : '' %>><%= p %></option>
+        <% }) %>
+      </select>
+      <input type="text" name="addressDistrict" value="<%= shop.addressDistrict || '' %>" placeholder="Quận/Huyện" />
+    </div>
+    <div class="form-row" style="margin-top:10px;">
+      <input type="text" name="addressWard" value="<%= shop.addressWard || '' %>" placeholder="Phường/Xã" />
+      <input type="text" name="addressStreet" value="<%= shop.addressStreet || '' %>" placeholder="Số nhà, tên đường" />
+    </div>
+  </div>
+
+  <h3>Thông báo &amp; giới thiệu</h3>
+  <div class="form-group">
+    <label>Thông báo (hiển thị trên đầu gian hàng)</label>
+    <input type="text" name="shopBanner" value="<%= shop.shopBanner || '' %>" placeholder="VD: Nghỉ Tết từ 25/12 - 05/01, đơn hàng xử lý lại sau Tết" />
+  </div>
+  <div class="form-group">
+    <label>Bài viết giới thiệu</label>
+    <textarea name="introPost" placeholder="Bài viết quảng cáo về gian hàng của bạn"><%= shop.introPost || '' %></textarea>
+  </div>
+  <div class="form-group">
+    <label>Bài viết giới thiệu (Dropship)</label>
+    <textarea name="dropshipIntroPost" placeholder="Giới thiệu gian hàng, thương hiệu với cộng tác viên Dropship. Không đề cập chính sách sỉ ở đây."><%= shop.dropshipIntroPost || '' %></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+</form>

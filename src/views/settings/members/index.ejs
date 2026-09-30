@@ -1,0 +1,61 @@
+<div class="page-header"><h1>Cài đặt</h1></div>
+<%- include('../../partials/settings-tabs') %>
+
+<div class="page-header" style="margin-top:0;">
+  <div>
+    <h2 style="margin:0; font-size:16px;">Thành viên gian hàng</h2>
+    <div class="page-sub">Thêm nhân viên, phân quyền truy cập từng khu vực quản trị</div>
+  </div>
+  <a href="/settings/members/new" class="btn btn-primary">+ Thêm thành viên</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Thành viên</th><th>Vai trò</th><th>Quyền truy cập</th><th>Trạng thái</th><th></th></tr></thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="product-cell">
+              <div class="avatar" style="width:34px;height:34px;font-size:13px;"><%= shop.shopName.charAt(0).toUpperCase() %></div>
+              <div><div class="p-name"><%= shop.shopName %></div><div class="p-sku"><%= shop.email %></div></div>
+            </div>
+          </td>
+          <td><span class="badge badge-info">Chủ gian hàng</span></td>
+          <td class="text-muted">Toàn quyền</td>
+          <td><span class="badge badge-success">Đang hoạt động</span></td>
+          <td></td>
+        </tr>
+        <% if (!members.length) { %>
+        <% } %>
+        <% members.forEach(m => { %>
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="avatar" style="width:34px;height:34px;font-size:13px;"><%= m.name.charAt(0).toUpperCase() %></div>
+                <div><div class="p-name"><%= m.name %></div><div class="p-sku"><%= m.email %> · <%= m.phone %></div></div>
+              </div>
+            </td>
+            <td><%= m.roleLabel %></td>
+            <td class="text-muted" style="max-width:260px;">
+              <%= MODULES.filter(mod => m.permissions[mod.key]).map(mod => mod.label).join(', ') || 'Không có quyền nào' %>
+            </td>
+            <td>
+              <% if (m.status === 'active') { %><span class="badge badge-success">Đang hoạt động</span>
+              <% } else { %><span class="badge badge-muted">Đã khoá</span><% } %>
+            </td>
+            <td class="text-right">
+              <a href="/settings/members/<%= m.id %>/edit" class="btn btn-sm">Sửa</a>
+              <form action="/settings/members/<%= m.id %>/toggle-status" method="POST" style="display:inline;">
+                <button class="btn btn-sm"><%= m.status==='active' ? 'Khoá' : 'Mở khoá' %></button>
+              </form>
+              <form action="/settings/members/<%= m.id %>/delete" method="POST" style="display:inline;" data-confirm="Xóa thành viên này?">
+                <button class="btn btn-sm btn-danger">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

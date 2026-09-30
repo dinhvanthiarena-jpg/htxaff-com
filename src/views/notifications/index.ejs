@@ -1,0 +1,21 @@
+<div class="page-header">
+  <h1>Thông báo</h1>
+  <form action="/notifications/read-all" method="POST"><button class="btn btn-sm">Đánh dấu đã đọc tất cả</button></form>
+</div>
+
+<div class="card">
+  <% if (!notifications.length) { %>
+    <div class="empty-state"><div class="emoji">🔔</div>Không có thông báo nào</div>
+  <% } %>
+  <% notifications.forEach(n => { %>
+    <div class="detail-row" style="align-items:flex-start;">
+      <div>
+        <div style="font-weight: <%= n.read ? 400 : 700 %>;"><%= n.message %></div>
+        <div class="text-muted" style="font-size:12px;"><%= new Date(n.createdAt).toLocaleString('vi-VN') %></div>
+      </div>
+      <% if (!n.read) { %>
+        <form action="/notifications/<%= n.id %>/read" method="POST"><button class="btn btn-sm">Đã đọc</button></form>
+      <% } %>
+    </div>
+  <% }) %>
+</div>

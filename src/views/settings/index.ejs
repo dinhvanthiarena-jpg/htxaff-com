@@ -1,0 +1,55 @@
+<div class="page-header"><h1>Cài đặt</h1></div>
+
+<div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px,1fr));">
+  <a class="card" href="/settings/general" style="display:block;">
+    <strong>Cài đặt chung</strong>
+    <div class="page-sub">Cập nhật chính sách bán hàng, hồ sơ công ty</div>
+  </a>
+  <a class="card" href="/settings/shop" style="display:block;">
+    <strong>Gian hàng</strong>
+    <div class="page-sub">Cập nhật tên gian hàng, logo, ảnh bìa</div>
+  </a>
+  <a class="card" href="/settings/decoration" style="display:block;">
+    <strong>Trang trí gian hàng</strong>
+    <div class="page-sub">Màu chủ đạo, banner hiển thị trên gian hàng</div>
+  </a>
+  <a class="card" href="/settings/branches" style="display:block;">
+    <strong>Chi nhánh/Điểm lấy hàng</strong>
+    <div class="page-sub">Quản lý địa chỉ lấy hàng, chi nhánh</div>
+  </a>
+  <a class="card" href="/settings/shipping" style="display:block;">
+    <strong>Vận chuyển</strong>
+    <div class="page-sub">Cài đặt vận chuyển</div>
+  </a>
+  <a class="card" href="/settings/bank" style="display:block;">
+    <strong>Tài khoản ngân hàng</strong>
+    <div class="page-sub">Quản lý các tài khoản ngân hàng dùng để nhận thanh toán</div>
+  </a>
+  <a class="card" href="/settings/integrations" style="display:block;">
+    <strong>Tích hợp đối tác</strong>
+    <div class="page-sub">Tích hợp với các đối tác để đồng bộ tồn kho, đơn hàng</div>
+  </a>
+  <a class="card" href="/settings/members" style="display:block;">
+    <strong>Thành viên gian hàng</strong>
+    <div class="page-sub">Quản lý tài khoản người dùng, phân quyền nhân viên</div>
+  </a>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Thông tin dịch vụ</h3>
+  <div class="detail-row"><span class="label">Thành viên từ</span><span><%= dayjs(shop.createdAt).format('DD/MM/YYYY') %></span></div>
+  <div class="detail-row"><span class="label">Gói dịch vụ</span><span class="badge badge-info">Miễn Phí</span></div>
+  <div class="detail-row"><span class="label">Hết hạn lúc</span><span>Không thời hạn</span></div>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Nhận ngay 300.000đ khi giới thiệu nhà cung cấp mới</h3>
+  <p class="page-sub">
+    Người được giới thiệu và bạn đều sẽ nhận được tiền vào ngân sách quảng cáo sản phẩm khi đăng ký bằng link giới thiệu
+    của bạn và đăng bán sản phẩm.
+  </p>
+  <div style="display:flex; gap:8px;">
+    <input type="text" readonly value="https://htxaff.com/register?ref=<%= shop.id %>" style="max-width:360px;" />
+    <button class="btn btn-sm" onclick="navigator.clipboard.writeText(this.previousElementSibling.value)">Sao chép</button>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="tabs">
+  <a class="tab-item <%= currentPath==='/settings/general'?'active':'' %>" href="/settings/general">Cài đặt chung</a>
+  <a class="tab-item <%= currentPath==='/settings/shop'?'active':'' %>" href="/settings/shop">Gian hàng</a>
+  <a class="tab-item <%= currentPath==='/settings/decoration'?'active':'' %>" href="/settings/decoration">Trang trí gian hàng</a>
+  <a class="tab-item <%= currentPath.startsWith('/settings/members')?'active':'' %>" href="/settings/members">Thành viên gian hàng</a>
+  <a class="tab-item <%= currentPath==='/settings/branches'?'active':'' %>" href="/settings/branches">Chi nhánh/Điểm lấy hàng</a>
+  <a class="tab-item <%= currentPath==='/settings/shipping'?'active':'' %>" href="/settings/shipping">Vận chuyển</a>
+  <a class="tab-item <%= currentPath==='/settings/bank'?'active':'' %>" href="/settings/bank">Tài khoản ngân hàng</a>
+  <a class="tab-item <%= currentPath==='/settings/integrations'?'active':'' %>" href="/settings/integrations">Tích hợp đối tác</a>
+  <a class="tab-item <%= currentPath==='/settings/security'?'active':'' %>" href="/settings/security">Bảo mật</a>
+</div>

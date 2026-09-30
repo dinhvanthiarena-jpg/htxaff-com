@@ -1,0 +1,86 @@
+<div class="page-header">
+  <div>
+    <h1>Đơn hàng <%= order.code %></h1>
+    <div class="page-sub">Tạo lúc <%= dayjs(order.createdAt).format('DD/MM/YYYY HH:mm') %></div>
+  </div>
+  <a href="/orders" class="btn">← Quay lại danh sách</a>
+</div>
+
+<div class="grid-2">
+  <div>
+    <div class="card">
+      <h3 style="margin-top:0;">Sản phẩm</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th class="text-right">Thành tiền</th></tr></thead>
+          <tbody>
+            <% order.items.forEach(item => { %>
+              <tr>
+                <td><%= item.name %></td>
+                <td><%= formatMoney(item.price) %></td>
+                <td><%= item.qty %></td>
+                <td class="text-right"><%= formatMoney(item.price * item.qty) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px; max-width:280px; margin-left:auto;">
+        <div class="detail-row"><span class="label">Tạm tính</span><span><%= formatMoney(order.subtotal) %></span></div>
+        <div class="detail-row"><span class="label">Phí vận chuyển</span><span><%= formatMoney(order.shippingFee) %></span></div>
+        <div class="detail-row"><span class="label">Giảm giá</span><span>-<%= formatMoney(order.discount) %></span></div>
+        <div class="detail-row"><span class="label"><strong>Tổng cộng</strong></span><strong><%= formatMoney(order.total) %></strong></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Lịch sử đơn hàng</h3>
+      <ul class="timeline">
+        <% order.timeline.slice().reverse().forEach(t => { %>
+          <li>
+            <div class="t-status"><%- include('../partials/status-badge', { status: t.status }) %></div>
+            <div class="t-time"><%= dayjs(t.at).format('DD/MM/YYYY HH:mm') %></div>
+            <% if (t.note) { %><div class="text-muted" style="margin-top:2px;"><%= t.note %></div><% } %>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h3 style="margin-top:0;">Khách hàng</h3>
+      <div class="detail-row"><span class="label">Tên</span><span><%= order.customer.name %></span></div>
+      <div class="detail-row"><span class="label">SĐT</span><span><%= order.customer.phone %></span></div>
+      <div class="detail-row"><span class="label">Địa chỉ</span><span style="text-align:right; max-width:180px;"><%= order.customer.address %></span></div>
+      <div class="detail-row"><span class="label">Thanh toán</span><span><%= order.paymentMethod === 'cod' ? 'COD' : 'Chuyển khoản' %></span></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Cập nhật trạng thái</h3>
+      <div style="margin-bottom:12px;"><%- include('../partials/status-badge', { status: order.status }) %></div>
+      <% if (!['delivered','cancelled','return_refund'].includes(order.status)) { %>
+        <form method="POST" action="/orders/<%= order.id %>/status">
+          <div class="form-group">
+            <label>Chuyển sang trạng thái</label>
+            <select name="nextStatus">
+              <% STATUS_FLOW.forEach(s => { %>
+                <% if (STATUS_FLOW.indexOf(s) > STATUS_FLOW.indexOf(order.status)) { %>
+                  <option value="<%= s %>"><%= STATUS_LABELS[s] %></option>
+                <% } %>
+              <% }) %>
+              <option value="cancelled">Hủy đơn</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ghi chú (không bắt buộc)</label>
+            <input type="text" name="note" placeholder="VD: Đã đóng gói, chờ đơn vị vận chuyển lấy hàng" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Cập nhật trạng thái</button>
+        </form>
+      <% } else { %>
+        <div class="text-muted">Đơn hàng đã kết thúc, không thể cập nhật thêm.</div>
+      <% } %>
+    </div>
+  </div>
+</div>

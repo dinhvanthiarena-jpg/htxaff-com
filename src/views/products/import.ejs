@@ -1,0 +1,26 @@
+<div class="page-header"><h1>Nhập dữ liệu sản phẩm</h1></div>
+
+<div class="card" style="max-width:600px;">
+  <div class="page-sub" style="margin-bottom:14px;">
+    Tải lên file CSV (xuất từ Excel/Google Sheets) theo đúng cột: <strong>SKU, Tên sản phẩm, Danh mục, Đơn vị, Giá bán lẻ, Tồn kho</strong>.
+    Nếu SKU đã tồn tại, hệ thống sẽ cập nhật sản phẩm đó; nếu chưa có, hệ thống sẽ tạo sản phẩm mới (trạng thái "Chờ duyệt").
+    Bấm <a href="/products/export">Xuất dữ liệu</a> để lấy file mẫu đúng định dạng.
+  </div>
+
+  <% if (result && result.error) { %>
+    <div class="auth-error"><%= result.error %></div>
+  <% } %>
+  <% if (result && !result.error) { %>
+    <div class="badge badge-success" style="margin-bottom:14px; display:inline-block;">
+      Đã tạo mới <%= result.created %> sản phẩm, cập nhật <%= result.updated %> sản phẩm.
+    </div>
+  <% } %>
+
+  <form method="POST" action="/products/import" enctype="multipart/form-data">
+    <div class="form-group">
+      <input type="file" name="file" accept=".csv" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Nhập dữ liệu</button>
+    <a href="/products" class="btn">Quay lại</a>
+  </form>
+</div>

@@ -1,0 +1,83 @@
+<div class="page-header">
+  <div>
+    <h1>Sản phẩm</h1>
+    <div class="page-sub">Tổng <%= pagination.total %> sản phẩm</div>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <a href="/products/export" class="btn">Xuất dữ liệu</a>
+    <a href="/products/import" class="btn">Nhập dữ liệu</a>
+    <a href="/products/new" class="btn btn-primary">+ Đăng sản phẩm mới</a>
+  </div>
+</div>
+
+<div class="card">
+  <form class="toolbar auto-submit" method="GET" action="/products">
+    <input type="text" class="search-input" name="q" value="<%= filters.q %>" placeholder="Tìm theo tên hoặc SKU..." />
+    <select name="status">
+      <option value="all" <%= filters.status==='all'?'selected':'' %>>Tất cả trạng thái</option>
+      <option value="active" <%= filters.status==='active'?'selected':'' %>>Đang bán</option>
+      <option value="hidden" <%= filters.status==='hidden'?'selected':'' %>>Đã ẩn</option>
+      <option value="pending" <%= filters.status==='pending'?'selected':'' %>>Chờ duyệt</option>
+    </select>
+    <select name="categoryId">
+      <option value="all">Tất cả danh mục</option>
+      <% categories.forEach(c => { %>
+        <option value="<%= c.id %>" <%= filters.categoryId===c.id?'selected':'' %>><%= c.name %></option>
+      <% }) %>
+    </select>
+    <button type="submit" class="btn btn-sm">Lọc</button>
+  </form>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Sản phẩm</th><th>Danh mục</th><th>Giá sỉ từ</th><th>Tồn kho</th><th>Đã bán</th><th>Trạng thái</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!products.length) { %>
+          <tr><td colspan="7"><div class="empty-state"><div class="emoji">📦</div>Chưa có sản phẩm nào phù hợp</div></td></tr>
+        <% } %>
+        <% products.forEach(p => { %>
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="thumb">
+                  <% if (p.images && p.images[0]) { %><img src="<%= p.images[0] %>" alt="" /><% } else { %>🛍️<% } %>
+                </div>
+                <div>
+                  <div class="p-name"><%= p.name %></div>
+                  <div class="p-sku">SKU: <%= p.sku %></div>
+                </div>
+              </div>
+            </td>
+            <td><%= categoryMap[p.categoryId] || '—' %></td>
+            <td><%= formatMoney(p.priceTiers[p.priceTiers.length-1].price) %> / <%= p.unit %></td>
+            <td><%= p.stock %></td>
+            <td><%= p.sold %></td>
+            <td><%- include('../partials/status-badge', { status: p.status }) %></td>
+            <td class="text-right">
+              <a href="/products/<%= p.id %>/edit" class="btn btn-sm">Sửa</a>
+              <form action="/products/<%= p.id %>/toggle-status" method="POST" style="display:inline;">
+                <button class="btn btn-sm"><%= p.status === 'active' ? 'Ẩn' : 'Hiện' %></button>
+              </form>
+              <form action="/products/<%= p.id %>/delete" method="POST" style="display:inline;" data-confirm="Xóa sản phẩm này?">
+                <button class="btn btn-sm btn-danger">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if (pagination.totalPages > 1) { %>
+    <div class="pagination">
+      <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+        <a class="page-link <%= i===pagination.currentPage?'active':'' %>"
+           href="/products?page=<%= i %>&q=<%= filters.q %>&status=<%= filters.status %>&categoryId=<%= filters.categoryId %>"><%= i %></a>
+      <% } %>
+    </div>
+  <% } %>
+</div>

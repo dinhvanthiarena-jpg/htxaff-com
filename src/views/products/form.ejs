@@ -1,0 +1,163 @@
+<div class="page-header">
+  <h1><%= product ? 'Sửa sản phẩm' : 'Thêm sản phẩm' %></h1>
+</div>
+<div class="page-sub" style="margin-bottom:14px;">Lưu ý: Vui lòng không điền thông tin liên hệ vào tên, mô tả hoặc hình ảnh sản phẩm.</div>
+
+<form class="card" method="POST"
+      action="<%= product ? '/products/'+product.id+'/edit' : '/products/new' %>"
+      enctype="multipart/form-data">
+
+  <div class="form-group">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <label style="margin:0;">Tên sản phẩm</label>
+      <button type="button" id="suggest-name-btn" class="btn-link">✨ Gợi ý tên bằng AI</button>
+    </div>
+    <input type="text" id="product-name" name="name" value="<%= product ? product.name : '' %>" required />
+    <div id="name-suggestions" style="display:none; margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
+  </div>
+
+  <div class="form-group">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <label style="margin:0;">Mô tả sản phẩm</label>
+      <button type="button" id="suggest-desc-btn" class="btn-link">✨ Gợi ý mô tả bằng AI</button>
+    </div>
+    <textarea id="product-description" name="description"><%= product ? product.description : '' %></textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Danh mục</label>
+      <select name="categoryId" id="product-category" required>
+        <% categories.forEach(c => { %>
+          <option value="<%= c.id %>" <%= product && product.categoryId===c.id ? 'selected' : '' %>><%= c.name %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Đơn vị tính</label>
+      <input type="text" id="product-unit" name="unit" value="<%= product ? product.unit : '' %>" placeholder="cái, hộp, thùng..." required />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Thông số kỹ thuật</label>
+    <div id="specs-wrap">
+      <% const specs = product && product.specs && product.specs.length ? product.specs : [{key:'', value:''}]; %>
+      <% specs.forEach(s => { %>
+        <div class="tier-row">
+          <input type="text" name="specKey" value="<%= s.key %>" placeholder="Tên thông số (VD: Chất liệu)" />
+          <input type="text" name="specValue" value="<%= s.value %>" placeholder="Giá trị (VD: Cotton)" />
+          <button type="button" class="btn btn-sm remove-row">Xóa</button>
+        </div>
+      <% }) %>
+    </div>
+    <button type="button" id="add-spec" class="btn btn-sm">+ Thêm thông số</button>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Ảnh sản phẩm (tối đa 5 ảnh)</label>
+      <input type="file" name="images" accept="image/*" multiple />
+      <% if (product && product.images && product.images.length) { %>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <% product.images.forEach(img => { %>
+            <div class="thumb" style="width:60px;height:60px;"><img src="<%= img %>" alt="" /></div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+    <div class="form-group">
+      <label>Video sản phẩm</label>
+      <input type="file" name="video" accept="video/*" />
+      <% if (product && product.video) { %><div class="text-muted" style="margin-top:6px; font-size:12px;">Đã có video</div><% } %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Bảng quy đổi kích cỡ (dành cho sản phẩm thời trang)</label>
+    <input type="file" name="sizeChartImage" accept="image/*" />
+    <% if (product && product.sizeChartImage) { %><div class="text-muted" style="margin-top:6px; font-size:12px;">Đã có bảng size</div><% } %>
+  </div>
+
+  <div class="form-group">
+    <label>Bảng giá sỉ theo số lượng</label>
+    <div id="tiers-wrap">
+      <% const tiers = product && product.priceTiers.length ? product.priceTiers : [{minQty:1, price:''}]; %>
+      <% tiers.forEach(t => { %>
+        <div class="tier-row">
+          <input type="number" name="tierQty" value="<%= t.minQty %>" placeholder="Mua từ (số lượng)" min="1" required />
+          <input type="number" name="tierPrice" value="<%= t.price %>" placeholder="Giá bán (đ)" min="0" required />
+          <button type="button" class="btn btn-sm remove-row">Xóa</button>
+        </div>
+      <% }) %>
+    </div>
+    <button type="button" id="add-tier" class="btn btn-sm">+ Thêm mốc giá</button>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Giá bán lẻ đề xuất (đ)</label>
+      <input type="number" name="retailSuggestPrice" value="<%= product ? product.retailSuggestPrice : '' %>" min="0" />
+    </div>
+    <div class="form-group">
+      <label>Giá bán lẻ (đ)</label>
+      <input type="number" name="retailPrice" value="<%= product ? product.retailPrice : '' %>" min="0" required />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Vận chuyển — Khối lượng &amp; kích thước sau đóng gói (1 đơn vị sản phẩm)</label>
+    <div class="form-row" style="grid-template-columns: repeat(4, 1fr);">
+      <input type="number" name="weight" value="<%= product ? product.weight : '' %>" placeholder="Khối lượng (gram)" min="0" required />
+      <input type="number" name="length" value="<%= product && product.dimensions ? product.dimensions.length : '' %>" placeholder="Dài (cm)" min="0" />
+      <input type="number" name="width" value="<%= product && product.dimensions ? product.dimensions.width : '' %>" placeholder="Rộng (cm)" min="0" />
+      <input type="number" name="height" value="<%= product && product.dimensions ? product.dimensions.height : '' %>" placeholder="Cao (cm)" min="0" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label style="display:flex; align-items:center; gap:8px;">
+      <input type="checkbox" name="hasVariants" style="width:auto;" id="hasVariants"
+        <%= product && product.variants && product.variants.length ? 'checked' : '' %> />
+      Sản phẩm này có nhiều biến thể (màu sắc, kích thước)
+    </label>
+    <div id="variants-wrap" style="display:<%= product && product.variants && product.variants.length ? 'grid' : 'none' %>; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px;">
+      <input type="text" name="variantColors" placeholder="Màu sắc, phân cách bởi dấu phẩy (VD: Đỏ, Xanh, Đen)"
+        value="<%= product && product.variants ? [...new Set(product.variants.map(v=>v.color).filter(Boolean))].join(', ') : '' %>" />
+      <input type="text" name="variantSizes" placeholder="Kích thước, phân cách bởi dấu phẩy (VD: S, M, L, XL)"
+        value="<%= product && product.variants ? [...new Set(product.variants.map(v=>v.size).filter(Boolean))].join(', ') : '' %>" />
+    </div>
+    <% if (product && product.variants && product.variants.length) { %>
+      <div class="text-muted" style="font-size:12.5px; margin-top:8px;">
+        Đã tạo <%= product.variants.length %> biến thể: <%= product.variants.map(v => [v.color, v.size].filter(Boolean).join(' - ')).join(', ') %>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="form-group">
+    <label>Tồn kho theo chi nhánh</label>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Chi nhánh</th><th>Tồn kho</th></tr></thead>
+        <tbody>
+          <% const stockOf = (branchId) => { if (!product || !product.branchStock) return ''; const found = product.branchStock.find(b=>b.branchId===branchId); return found ? found.stock : 0; }; %>
+          <tr>
+            <td><%= shop.shopName %> (Mặc định)</td>
+            <td><input type="hidden" name="branchId" value="default" /><input type="number" name="branchQty" value="<%= stockOf('default') %>" min="0" style="max-width:120px;" /></td>
+          </tr>
+          <% branches.forEach(b => { %>
+            <tr>
+              <td><%= b.name %></td>
+              <td><input type="hidden" name="branchId" value="<%= b.id %>" /><input type="number" name="branchQty" value="<%= stockOf(b.id) %>" min="0" style="max-width:120px;" /></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:10px;">
+    <button type="submit" class="btn btn-primary">Lưu sản phẩm</button>
+    <a href="/products" class="btn">Hủy</a>
+  </div>
+</form>

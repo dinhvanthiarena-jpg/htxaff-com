@@ -1,0 +1,42 @@
+<div class="page-header">
+  <h1>Khách hàng</h1>
+</div>
+
+<div class="card">
+  <div class="toolbar" style="justify-content:space-between;">
+    <form method="GET" action="/customers" style="display:flex; gap:8px;">
+      <input type="text" class="search-input" name="q" value="<%= filters.q %>" placeholder="Tìm khách hàng..." />
+      <button class="btn btn-sm">Tìm</button>
+    </form>
+    <a href="/customers/new" class="btn btn-primary btn-sm">+ Thêm khách hàng</a>
+  </div>
+
+  <div class="page-sub" style="margin-bottom:10px;">Đang hiển thị <%= customers.length %> khách hàng</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Khách hàng</th><th>Khu vực</th><th>Số đơn hàng</th><th class="text-right">Đã thanh toán</th></tr></thead>
+      <tbody>
+        <% if (!customers.length) { %>
+          <tr><td colspan="4"><div class="empty-state"><div class="emoji">👥</div>Chưa có khách hàng nào</div></td></tr>
+        <% } %>
+        <% customers.forEach(c => { %>
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="avatar" style="width:34px;height:34px;font-size:13px;"><%= c.name.charAt(0).toUpperCase() %></div>
+                <div>
+                  <div class="p-name"><%= c.name %></div>
+                  <div class="p-sku"><%= c.phone %></div>
+                </div>
+              </div>
+            </td>
+            <td><%= c.location || '—' %></td>
+            <td><%= c.ordersCount %> đơn hàng</td>
+            <td class="text-right"><%= formatMoney(c.totalPaid) %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

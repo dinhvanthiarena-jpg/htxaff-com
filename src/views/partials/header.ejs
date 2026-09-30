@@ -1,0 +1,27 @@
+<header class="topbar">
+  <div class="topbar-title"><%= typeof title !== 'undefined' ? title : '' %></div>
+  <div class="topbar-actions">
+    <a href="/campaigns" class="btn btn-sm" style="border-color:var(--brand); color:var(--brand-dark);">Nâng cấp gian hàng VIP/Doanh Nghiệp</a>
+    <a href="/notifications" class="icon-btn" title="Thông báo">
+      &#128276;
+      <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
+        <span class="badge-dot"><%= unreadCount %></span>
+      <% } %>
+    </a>
+    <div class="user-chip">
+      <% const displayName = (typeof member !== 'undefined' && member) ? member.name : (shop ? shop.shopName : ''); %>
+      <div class="avatar"><%= displayName ? displayName.charAt(0).toUpperCase() : 'S' %></div>
+      <div class="user-meta">
+        <strong><%= displayName %></strong>
+        <small>
+          <% if (typeof member !== 'undefined' && member) { %>
+            <%= member.roleLabel %> · <%= shop.shopName %>
+          <% } else { %>
+            Chủ gian hàng · <%= shop ? shop.email : '' %>
+          <% } %>
+        </small>
+      </div>
+      <a href="/logout" class="logout-link">Đăng xuất</a>
+    </div>
+  </div>
+</header>

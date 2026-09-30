@@ -1,0 +1,46 @@
+<div class="page-header">
+  <div>
+    <h1>Khuyến mãi</h1>
+    <div class="page-sub">Quản lý mã giảm giá và chương trình khuyến mãi</div>
+  </div>
+  <a href="/promotions/new" class="btn btn-primary">+ Tạo khuyến mãi</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Mã</th><th>Tên chương trình</th><th>Loại giảm</th><th>Đơn tối thiểu</th><th>Đã dùng</th><th>Thời gian</th><th>Trạng thái</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% if (!promotions.length) { %>
+          <tr><td colspan="8"><div class="empty-state"><div class="emoji">🏷️</div>Chưa có chương trình khuyến mãi nào</div></td></tr>
+        <% } %>
+        <% promotions.forEach(p => { %>
+          <tr>
+            <td><strong><%= p.code || 'Tự động' %></strong></td>
+            <td><%= p.name %></td>
+            <td><%= p.type === 'percent' ? 'Giảm ' + p.value + '%' : 'Giảm ' + formatMoney(p.value) %></td>
+            <td>
+              <% if (p.minReqType === 'value') { %><%= formatMoney(p.minOrderValue) %>
+              <% } else if (p.minReqType === 'qty') { %><%= p.minOrderQty %> sản phẩm
+              <% } else { %>Không yêu cầu<% } %>
+            </td>
+            <td><%= p.used %>/<%= p.usageLimit > 0 ? p.usageLimit : '∞' %></td>
+            <td class="text-muted"><%= dayjs(p.startDate).format('DD/MM') %> - <%= dayjs(p.endDate).format('DD/MM/YYYY') %></td>
+            <td>
+              <% if (p.status === 'active') { %><span class="badge badge-success">Đang chạy</span>
+              <% } else if (p.status === 'scheduled') { %><span class="badge badge-info">Sắp diễn ra</span>
+              <% } else { %><span class="badge badge-muted">Đã kết thúc</span><% } %>
+            </td>
+            <td class="text-right">
+              <form action="/promotions/<%= p.id %>/delete" method="POST" data-confirm="Xóa chương trình này?">
+                <button class="btn btn-sm btn-danger">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

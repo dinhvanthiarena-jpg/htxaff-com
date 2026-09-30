@@ -1,0 +1,64 @@
+<div class="page-header"><h1>Feed</h1></div>
+
+<form class="card" method="POST" action="/feed" enctype="multipart/form-data">
+  <div class="form-group">
+    <textarea name="content" placeholder="Hôm nay bạn muốn chia sẻ điều gì?"></textarea>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Đính kèm ảnh/video</label>
+      <input type="file" name="images" accept="image/*,video/*" multiple />
+    </div>
+    <div class="form-group">
+      <label>Đính kèm sản phẩm</label>
+      <select name="productId">
+        <option value="">Không đính kèm</option>
+        <% products.forEach(p => { %>
+          <option value="<%= p.id %>"><%= p.name %></option>
+        <% }) %>
+      </select>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Đăng bài</button>
+</form>
+
+<% if (!posts.length) { %>
+  <div class="card empty-state"><div class="emoji">📰</div>Chưa có bài viết nào, hãy đăng bài đầu tiên!</div>
+<% } %>
+
+<% posts.forEach(post => { %>
+  <div class="card">
+    <div style="display:flex; justify-content:space-between;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="avatar"><%= shop.shopName.charAt(0).toUpperCase() %></div>
+        <div>
+          <strong><%= shop.shopName %></strong>
+          <div class="text-muted" style="font-size:12px;"><%= dayjs(post.createdAt).format('DD/MM/YYYY HH:mm') %></div>
+        </div>
+      </div>
+      <form action="/feed/<%= post.id %>/delete" method="POST" data-confirm="Xóa bài viết này?">
+        <button class="btn btn-sm btn-danger">Xóa</button>
+      </form>
+    </div>
+    <% if (post.content) { %><p style="margin:12px 0;"><%= post.content %></p><% } %>
+    <% if (post.images && post.images.length) { %>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <% post.images.forEach(img => { %>
+          <div class="thumb" style="width:120px; height:120px;"><img src="<%= img %>" alt="" /></div>
+        <% }) %>
+      </div>
+    <% } %>
+    <% if (post.productId) { %>
+      <% const p = products.find(pr => pr.id === post.productId); %>
+      <% if (p) { %>
+        <div class="card" style="box-shadow:none; border:1px solid var(--border); margin-top:10px; display:flex; gap:10px; align-items:center;">
+          <div class="thumb"><% if (p.images[0]) { %><img src="<%= p.images[0] %>" alt="" /><% } else { %>🛍️<% } %></div>
+          <div>
+            <div class="p-name"><%= p.name %></div>
+            <div class="text-muted" style="font-size:12.5px;"><%= formatMoney(p.priceTiers[0].price) %></div>
+          </div>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+<% }) %>

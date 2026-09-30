@@ -1,0 +1,64 @@
+<div class="page-header">
+  <div>
+    <h1>Yêu cầu báo giá</h1>
+    <div class="page-sub">Bạn còn lại <strong><%= remainingQuota %></strong>/<%= monthlyQuota %> lượt gửi báo giá trong tháng này.</div>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <a href="/rfqs/buy-quota" class="btn">Mua lượt báo giá</a>
+    <a href="/rfqs/quotations" class="btn">Báo giá đã gửi</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tabs">
+    <a class="tab-item active" href="/rfqs">Tất cả yêu cầu</a>
+    <a class="tab-item" href="/rfqs/quotations">Báo giá đã gửi</a>
+    <a class="tab-item" href="/rfqs/notifications">Cài đặt nhận thông báo</a>
+  </div>
+
+  <form class="toolbar auto-submit" method="GET" action="/rfqs">
+    <input type="text" class="search-input" name="q" value="<%= filters.q %>" placeholder="VD: Áo dài, kem chống nắng..." />
+    <select name="categoryId">
+      <option value="all">Tất cả danh mục</option>
+      <% categories.forEach(c => { %>
+        <option value="<%= c.id %>" <%= filters.categoryId===c.id?'selected':'' %>><%= c.name %></option>
+      <% }) %>
+    </select>
+    <button type="submit" class="btn btn-sm">Tìm</button>
+  </form>
+
+  <% if (!rfqs.length) { %>
+    <div class="empty-state"><div class="emoji">📝</div>Không có yêu cầu báo giá nào phù hợp</div>
+  <% } %>
+
+  <% rfqs.forEach(r => { %>
+    <div class="card" style="box-shadow:none; border:1px solid var(--border);">
+      <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <div>
+          <strong style="font-size:15px;"><%= r.title %></strong>
+          <div class="text-muted" style="font-size:12.5px; margin-top:2px;">
+            <%= r.buyerName %> · <%= r.buyerLocation %> · Đăng lúc <%= dayjs(r.createdAt).format('DD/MM/YYYY HH:mm') %>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-muted" style="font-size:12px;">Hết hạn <%= dayjs(r.expiresAt).format('DD/MM/YYYY') %></div>
+        </div>
+      </div>
+      <p style="margin:10px 0;"><%= r.description %></p>
+      <div style="display:flex; gap:24px; flex-wrap:wrap; margin-bottom:10px;" class="text-muted">
+        <span>Số lượng cần: <strong style="color:var(--text);"><%= r.quantity %> <%= r.unit %></strong></span>
+        <% if (r.targetPrice) { %><span>Giá mong muốn: <strong style="color:var(--text);"><%= formatMoney(r.targetPrice) %></strong></span><% } %>
+      </div>
+
+      <% if (quotedRfqIds.includes(r.id)) { %>
+        <span class="badge badge-success">Đã gửi báo giá</span>
+      <% } else { %>
+        <form action="/rfqs/<%= r.id %>/quote" method="POST" style="display:flex; gap:8px; flex-wrap:wrap;">
+          <input type="number" name="price" placeholder="Giá báo (đ)" required style="max-width:180px;" />
+          <input type="text" name="note" placeholder="Ghi chú cho khách..." style="max-width:280px;" />
+          <button type="submit" class="btn btn-sm btn-primary" <%= remainingQuota<=0 ? 'disabled' : '' %>>Gửi báo giá</button>
+        </form>
+      <% } %>
+    </div>
+  <% }) %>
+</div>

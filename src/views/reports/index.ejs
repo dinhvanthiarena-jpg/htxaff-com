@@ -1,0 +1,105 @@
+<div class="page-header">
+  <div>
+    <h1>Thống kê</h1>
+    <div class="page-sub">Báo cáo hiệu quả kinh doanh gian hàng</div>
+  </div>
+  <form method="GET" action="/reports">
+    <select name="range" onchange="this.form.submit()">
+      <option value="7" <%= range==7?'selected':'' %>>7 ngày qua</option>
+      <option value="30" <%= range==30?'selected':'' %>>30 ngày qua</option>
+      <option value="90" <%= range==90?'selected':'' %>>90 ngày qua</option>
+    </select>
+  </form>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">Lượt hiển thị</div>
+    <div class="stat-value"><%= traffic.impressions %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Lượt xem</div>
+    <div class="stat-value"><%= traffic.views %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Lượt nhắn tin</div>
+    <div class="stat-value"><%= traffic.messages %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Lượt xem SĐT</div>
+    <div class="stat-value"><%= traffic.phoneViews %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Đơn hỏi mua (RFQ)</div>
+    <div class="stat-value"><%= traffic.inquiryOrders %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Đơn hàng</div>
+    <div class="stat-value"><%= traffic.orders %></div>
+  </div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">Tổng doanh thu</div>
+    <div class="stat-value accent"><%= formatMoney(totalRevenue) %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Tổng đơn hàng</div>
+    <div class="stat-value"><%= totalOrders %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Tỉ lệ hoàn thành</div>
+    <div class="stat-value"><%= conversionRate %>%</div>
+    <div class="stat-hint"><%= completedCount %> đã giao / <%= cancelledCount %> hủy</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Giá trị đơn trung bình</div>
+    <div class="stat-value"><%= formatMoney(avgOrderValue) %></div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Lưu lượng truy cập theo ngày</h3>
+  <%- include('../partials/line-chart', { chartId: 'traffic-views', series: viewsByDay, chartColor: '#2563EB' }) %>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Tương tác &amp; đơn hàng theo ngày</h3>
+  <%- include('../partials/line-chart', { chartId: 'traffic-orders', series: ordersByDay, chartColor: '#16A34A' }) %>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h3 style="margin-top:0;">Biểu đồ doanh thu</h3>
+    <%- include('../partials/line-chart', { chartId: 'reports-revenue', series: revenueSeries }) %>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Top sản phẩm bán chạy</h3>
+    <% if (!topProducts.length) { %><div class="text-muted">Chưa có dữ liệu</div><% } %>
+    <% topProducts.forEach((p, idx) => { %>
+      <div class="detail-row">
+        <span class="label">#<%= idx+1 %> <%= p.name %></span>
+        <span><%= p.qty %> sp — <%= formatMoney(p.revenue) %></span>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Phân bố trạng thái đơn hàng</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Trạng thái</th><th class="text-right">Số lượng</th></tr></thead>
+      <tbody>
+        <% statusBreakdown.forEach(s => { %>
+          <tr>
+            <td><%- include('../partials/status-badge', { status: s.status }) %></td>
+            <td class="text-right"><%= s.count %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

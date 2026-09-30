@@ -1,0 +1,19 @@
+<div class="page-header"><h1>Yêu cầu báo giá</h1></div>
+
+<div class="card">
+  <div class="tabs">
+    <a class="tab-item" href="/rfqs">Tất cả yêu cầu</a>
+    <a class="tab-item" href="/rfqs/quotations">Báo giá đã gửi</a>
+    <a class="tab-item active" href="/rfqs/notifications">Cài đặt nhận thông báo</a>
+  </div>
+
+  <% if (saved) { %><div class="badge badge-success" style="margin-bottom:12px; display:inline-block;">Đã lưu thay đổi</div><% } %>
+
+  <form method="POST" action="/rfqs/notifications" style="max-width:480px;">
+    <label style="display:flex; align-items:center; gap:8px; font-weight:600; margin-bottom:14px;">
+      <input type="checkbox" name="rfqNotifyEmail" style="width:auto;" <%= shop.rfqNotifyEmail ? 'checked' : '' %> />
+      Nhận email khi có yêu cầu báo giá phù hợp
+    </label>
+    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+  </form>
+</div>

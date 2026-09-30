@@ -1,0 +1,39 @@
+<div class="page-header"><h1>Thêm khách hàng</h1></div>
+
+<form class="card" method="POST" action="/customers/new" style="max-width:520px;">
+  <h3 style="margin-top:0;">Tổng quan</h3>
+  <div class="form-row">
+    <div class="form-group"><label>Họ *</label><input type="text" name="lastName" required /></div>
+    <div class="form-group"><label>Tên *</label><input type="text" name="firstName" required /></div>
+  </div>
+  <div class="form-group"><label>Email</label><input type="email" name="email" /></div>
+  <div class="form-group"><label>Số điện thoại *</label><input type="tel" name="phone" required /></div>
+  <label style="display:flex; align-items:center; gap:8px; font-weight:400; margin-bottom:16px;">
+    <input type="checkbox" name="marketingOptIn" style="width:auto;" /> Khách hàng đồng ý nhận email quảng cáo
+  </label>
+
+  <h3>Địa chỉ</h3>
+  <div class="form-group">
+    <label>Địa chỉ mặc định của khách hàng</label>
+    <div class="form-row">
+      <select name="addressProvince">
+        <option value="">Chọn Tỉnh/Thành</option>
+        <% provinces.forEach(p => { %><option value="<%= p %>"><%= p %></option><% }) %>
+      </select>
+      <input type="text" name="addressDistrict" placeholder="Quận/Huyện" />
+    </div>
+    <input type="text" name="addressStreet" placeholder="Số nhà, tên đường" style="margin-top:10px;" />
+  </div>
+
+  <h3>Ghi chú</h3>
+  <div class="form-group">
+    <textarea name="note" placeholder="Thêm ghi chú về khách hàng của bạn"></textarea>
+  </div>
+
+  <h3>Tags</h3>
+  <div class="form-group">
+    <input type="text" name="tags" placeholder="Tag dùng để phân nhóm khách hàng, phân cách bởi dấu phẩy" />
+  </div>
+
+  <button type="submit" class="btn btn-primary">Tạo khách hàng</button>
+</form>

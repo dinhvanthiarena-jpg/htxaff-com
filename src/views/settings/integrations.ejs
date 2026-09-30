@@ -1,0 +1,13 @@
+<div class="page-header"><h1>Cài đặt</h1></div>
+<%- include('../partials/settings-tabs') %>
+
+<div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px,1fr));">
+  <% const partners = ['Haravan', 'TikTok Shop', 'Sapo', 'Woocommerce']; %>
+  <% partners.forEach(p => { %>
+    <div class="card">
+      <strong><%= p %></strong>
+      <div class="page-sub" style="margin:6px 0 14px;">Đồng bộ tồn kho & đơn hàng tự động với <%= p %></div>
+      <button class="btn btn-sm" disabled>Kết nối</button>
+    </div>
+  <% }) %>
+</div>

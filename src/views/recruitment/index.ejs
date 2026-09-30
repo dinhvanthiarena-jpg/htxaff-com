@@ -1,0 +1,41 @@
+<div class="page-header">
+  <div>
+    <h1>Tuyển NPP, Đại lý, CTV</h1>
+    <div class="page-sub">Đăng tin tuyển nhà phân phối, đại lý, cộng tác viên bán hàng</div>
+  </div>
+  <a href="/recruitment/new" class="btn btn-primary">+ Đăng tin mới</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tiêu đề</th><th>Loại</th><th>Ngày đăng</th><th>Ngày hết hạn</th><th>Kiểm duyệt</th><th>Trạng thái</th><th></th></tr></thead>
+      <tbody>
+        <% if (!posts.length) { %>
+          <tr><td colspan="7"><div class="empty-state"><div class="emoji">📢</div>Bạn chưa đăng tin nào</div></td></tr>
+        <% } %>
+        <% posts.forEach(p => { %>
+          <tr>
+            <td><%= p.title %></td>
+            <td><%= p.type %></td>
+            <td class="text-muted"><%= dayjs(p.createdAt).format('DD/MM/YYYY') %></td>
+            <td class="text-muted"><%= dayjs(p.expiresAt).format('DD/MM/YYYY') %></td>
+            <td>
+              <% if (p.moderation === 'approved') { %><span class="badge badge-success">Đã duyệt</span>
+              <% } else { %><span class="badge badge-warning">Chờ duyệt</span><% } %>
+            </td>
+            <td>
+              <% if (p.status === 'active') { %><span class="badge badge-info">Đang hiển thị</span>
+              <% } else { %><span class="badge badge-muted">Hết hạn</span><% } %>
+            </td>
+            <td class="text-right">
+              <form action="/recruitment/<%= p.id %>/delete" method="POST" data-confirm="Xóa tin này?">
+                <button class="btn btn-sm btn-danger">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

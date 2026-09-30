@@ -1,0 +1,52 @@
+<div class="page-header">
+  <div>
+    <h1>Đánh giá</h1>
+    <div class="page-sub">Trung bình <strong>⭐ <%= avgRating %></strong> / <%= totalReviews %> đánh giá</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div>
+    <div class="card">
+      <div class="toolbar">
+        <a class="tab-item <%= filters.rating==='all'?'active':'' %>" href="/reviews?rating=all">Tất cả</a>
+        <% [5,4,3,2,1].forEach(r => { %>
+          <a class="tab-item <%= filters.rating==String(r)?'active':'' %>" href="/reviews?rating=<%= r %>"><%= r %> sao</a>
+        <% }) %>
+      </div>
+
+      <% if (!reviews.length) { %>
+        <div class="empty-state"><div class="emoji">⭐</div>Chưa có đánh giá nào</div>
+      <% } %>
+
+      <% reviews.forEach(r => { %>
+        <div class="card" style="box-shadow:none; border:1px solid var(--border);">
+          <div style="display:flex; justify-content:space-between;">
+            <strong><%= r.customerName %></strong>
+            <span class="text-muted"><%= new Date(r.createdAt).toLocaleDateString('vi-VN') %></span>
+          </div>
+          <div class="stars"><%= '★'.repeat(r.rating) %><span class="text-muted"><%= '★'.repeat(5-r.rating) %></span></div>
+          <div class="text-muted" style="font-size:12.5px; margin:4px 0;">Sản phẩm: <%= r.productName %></div>
+          <p style="margin:8px 0;"><%= r.comment %></p>
+          <% if (r.reply) { %>
+            <div style="background:var(--brand-light); padding:10px 12px; border-radius:6px; font-size:13px;">
+              <strong>Phản hồi của shop:</strong> <%= r.reply %>
+            </div>
+          <% } else { %>
+            <form action="/reviews/<%= r.id %>/reply" method="POST" style="margin-top:8px; display:flex; gap:8px;">
+              <input type="text" name="reply" placeholder="Trả lời khách hàng..." required />
+              <button class="btn btn-sm btn-primary">Gửi</button>
+            </form>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Phân bố đánh giá</h3>
+    <% ratingCounts.forEach(rc => { %>
+      <div class="detail-row"><span class="label"><%= rc.star %> sao</span><span><%= rc.count %></span></div>
+    <% }) %>
+  </div>
+</div>

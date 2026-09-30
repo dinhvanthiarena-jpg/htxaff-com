@@ -1,0 +1,74 @@
+<div class="page-header"><h1>Cài đặt</h1></div>
+<%- include('../../partials/settings-tabs') %>
+
+<div class="page-header" style="margin-top:0;">
+  <h2 style="margin:0; font-size:16px;"><%= member ? 'Sửa thành viên' : 'Thêm thành viên' %></h2>
+</div>
+
+<% if (error) { %><div class="auth-error"><%= error %></div><% } %>
+
+<form class="card" method="POST"
+      action="<%= member ? '/settings/members/'+member.id+'/edit' : '/settings/members/new' %>"
+      style="max-width:600px;">
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Họ tên</label>
+      <input type="text" name="name" value="<%= member ? member.name : '' %>" required />
+    </div>
+    <div class="form-group">
+      <label>Vai trò</label>
+      <select name="role" id="role-select">
+        <% Object.entries(ROLE_PRESETS).forEach(([key, preset]) => { %>
+          <option value="<%= key %>" <%= member && member.role===key ? 'selected' : '' %>><%= preset.label %></option>
+        <% }) %>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" name="email" value="<%= member ? member.email : '' %>" required />
+    </div>
+    <div class="form-group">
+      <label>Số điện thoại</label>
+      <input type="tel" name="phone" value="<%= member ? member.phone : '' %>" required />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Mật khẩu <% if (member) { %>(để trống nếu không đổi)<% } %></label>
+    <input type="password" name="password" minlength="6" <%= member ? '' : 'required' %> />
+  </div>
+
+  <div class="form-group">
+    <label>Quyền truy cập</label>
+    <div id="permissions-wrap" style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
+      <% MODULES.forEach(mod => { %>
+        <label style="display:flex; align-items:center; gap:8px; font-weight:400;">
+          <input type="checkbox" name="perm_<%= mod.key %>" class="perm-checkbox" style="width:auto;"
+            <%= member && member.permissions[mod.key] ? 'checked' : '' %> />
+          <%= mod.label %>
+        </label>
+      <% }) %>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:10px;">
+    <button type="submit" class="btn btn-primary">Lưu thành viên</button>
+    <a href="/settings/members" class="btn">Hủy</a>
+  </div>
+</form>
+
+<script>
+  var rolePresets = <%- JSON.stringify(Object.fromEntries(Object.entries(ROLE_PRESETS).map(([k,v]) => [k, v.permissions]))) %>;
+  var roleSelect = document.getElementById('role-select');
+  roleSelect.addEventListener('change', function () {
+    var preset = rolePresets[roleSelect.value] || {};
+    document.querySelectorAll('.perm-checkbox').forEach(function (cb) {
+      var key = cb.name.replace('perm_', '');
+      cb.checked = !!preset[key];
+    });
+  });
+</script>

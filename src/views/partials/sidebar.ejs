@@ -1,0 +1,89 @@
+<%
+function canSee(key) {
+  return typeof isOwner === 'undefined' || isOwner || (permissions && permissions[key]);
+}
+%>
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo-badge">HTX</div>
+    <div class="brand-text">
+      <strong>htxaff<span>.com</span></strong>
+      <small>Kênh bán hàng</small>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="/" class="nav-item <%= active === 'dashboard' ? 'active' : '' %>">
+      <span class="nav-icon">&#127968;</span> Trang chủ
+    </a>
+    <% if (canSee('orders')) { %>
+    <a href="/orders" class="nav-item <%= active === 'orders' ? 'active' : '' %>">
+      <span class="nav-icon">&#128203;</span> Đơn hàng &amp; Hỏi mua
+    </a>
+    <% } %>
+    <% if (canSee('rfqs')) { %>
+    <a href="/rfqs" class="nav-item <%= active === 'rfqs' ? 'active' : '' %>">
+      <span class="nav-icon">&#128221;</span> Yêu cầu báo giá
+    </a>
+    <% } %>
+    <% if (canSee('feed')) { %>
+    <a href="/feed" class="nav-item <%= active === 'feed' ? 'active' : '' %>">
+      <span class="nav-icon">&#128240;</span> Feed
+    </a>
+    <a href="/messengers" class="nav-item <%= active === 'messengers' ? 'active' : '' %>">
+      <span class="nav-icon">&#128172;</span> Tin nhắn
+    </a>
+    <% } %>
+    <% if (canSee('products')) { %>
+    <a href="/products" class="nav-item <%= active === 'products' ? 'active' : '' %>">
+      <span class="nav-icon">&#128230;</span> Sản phẩm
+    </a>
+    <% } %>
+    <% if (canSee('finance')) { %>
+    <a href="/finance" class="nav-item <%= active === 'finance' ? 'active' : '' %>">
+      <span class="nav-icon">&#128176;</span> Tài chính
+    </a>
+    <% } %>
+    <% if (canSee('recruitment')) { %>
+    <a href="/recruitment" class="nav-item <%= active === 'recruitment' ? 'active' : '' %>">
+      <span class="nav-icon">&#129309;</span> Tuyển NPP, Đại lý, CTV
+    </a>
+    <% } %>
+    <% if (canSee('reports')) { %>
+    <a href="/reports" class="nav-item <%= active === 'reports' ? 'active' : '' %>">
+      <span class="nav-icon">&#128200;</span> Thống kê
+    </a>
+    <% } %>
+    <% if (canSee('customers')) { %>
+    <a href="/customers" class="nav-item <%= active === 'customers' ? 'active' : '' %>">
+      <span class="nav-icon">&#128101;</span> Khách hàng
+    </a>
+    <% } %>
+    <% if (canSee('promotions')) { %>
+    <a href="/promotions" class="nav-item <%= active === 'promotions' ? 'active' : '' %>">
+      <span class="nav-icon">&#127991;</span> Giảm giá
+    </a>
+    <% } %>
+    <a href="/campaigns" class="nav-item <%= active === 'campaigns' ? 'active' : '' %>">
+      <span class="nav-icon">&#128226;</span> Kênh marketing
+    </a>
+    <a href="/dropship" class="nav-item <%= active === 'dropship' ? 'active' : '' %>">
+      <span class="nav-icon">&#128666;</span> Dropshipping <span class="badge badge-danger" style="margin-left:4px; font-size:9px; padding:1px 6px;">Mới</span>
+    </a>
+    <% if (canSee('reviews')) { %>
+    <a href="/reviews" class="nav-item <%= active === 'reviews' ? 'active' : '' %>">
+      <span class="nav-icon">&#11088;</span> Đánh giá
+    </a>
+    <% } %>
+    <div class="nav-divider"></div>
+    <% if (canSee('settings')) { %>
+    <a href="/settings" class="nav-item <%= active === 'settings' ? 'active' : '' %>">
+      <span class="nav-icon">&#9881;</span> Cài đặt
+    </a>
+    <% } else { %>
+    <a href="/settings/security" class="nav-item <%= active === 'settings' ? 'active' : '' %>">
+      <span class="nav-icon">&#9881;</span> Bảo mật
+    </a>
+    <% } %>
+  </nav>
+</aside>
