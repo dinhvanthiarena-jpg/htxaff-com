@@ -24,6 +24,7 @@ const customerRoutes = require('./routes/customers');
 const recruitmentRoutes = require('./routes/recruitment');
 const campaignRoutes = require('./routes/campaigns');
 const dropshipRoutes = require('./routes/dropship');
+const storefrontRoutes = require('./routes/storefront');
 
 const app = express();
 
@@ -61,8 +62,19 @@ app.use((req, res, next) => {
   next();
 });
 
+// Guests hitting the homepage see the public storefront landing instead of being
+// forced to /login — the seller dashboard (dashboardRoutes below) still owns '/'
+// for logged-in sessions.
+app.use('/', (req, res, next) => {
+  if (req.path === '/' && req.method === 'GET' && !req.session.shopId) {
+    return storefrontRoutes.publicHome(req, res, next);
+  }
+  next();
+});
+
 app.use('/', authRoutes);
 app.use('/', dashboardRoutes);
+app.use('/', storefrontRoutes.router);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 app.use('/inventory', inventoryRoutes);

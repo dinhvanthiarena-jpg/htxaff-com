@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="store-page">
+    <%- include('./partials/nav') %>
+    <div class="store-container">
+      <h2 style="margin-bottom:16px;">Kết quả tìm kiếm cho "<%= q %>" (<%= products.length %>)</h2>
+      <% if (!products.length) { %>
+        <div class="empty-state"><div class="emoji">🔍</div>Không tìm thấy sản phẩm phù hợp.</div>
+      <% } else { %>
+        <div class="product-grid">
+          <% products.forEach((p) => { %>
+            <a href="/store/<%= p.shopId %>/product/<%= p.id %>" class="product-card">
+              <div class="p-img">📦</div>
+              <div class="p-body">
+                <div class="p-name"><%= p.name %></div>
+                <div class="p-price"><%= p.priceTiers && p.priceTiers[0] ? formatMoney(p.priceTiers[0].price) : 'Liên hệ' %></div>
+                <div class="p-sold"><%= productShopMap[p.shopId] ? productShopMap[p.shopId].shopName : '' %></div>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+    <%- include('./partials/footer') %>
+  </div>
+</body>
+</html>

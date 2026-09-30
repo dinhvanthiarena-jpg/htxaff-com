@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="store-page">
+    <%- include('./partials/nav') %>
+
+    <div class="store-container">
+      <div class="text-muted" style="margin-bottom:12px;font-size:13px;">
+        <a href="/store/<%= shop.id %>">← <%= shop.shopName %></a>
+        <% if (category) { %> / <%= category.name %><% } %>
+      </div>
+
+      <div class="product-detail-grid">
+        <div class="card">
+          <div class="p-img" style="aspect-ratio:1;font-size:60px;">📦</div>
+        </div>
+
+        <div>
+          <h1 style="margin:0 0 8px;font-size:20px;"><%= product.name %></h1>
+          <div class="text-muted" style="margin-bottom:12px;">SKU: <%= product.sku %> · Đã bán <%= product.sold %> <%= product.unit %></div>
+
+          <div class="card" style="background:var(--brand-light);border:none;margin-bottom:16px;">
+            <table>
+              <thead><tr><th>Số lượng</th><th class="text-right">Đơn giá / <%= product.unit %></th></tr></thead>
+              <tbody>
+                <% (product.priceTiers || []).forEach((t) => { %>
+                  <tr><td>Từ <%= t.minQty %> <%= product.unit %></td><td class="text-right" style="font-weight:700;color:var(--brand-dark);"><%= formatMoney(t.price) %></td></tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+
+          <% if (product.variants && product.variants.length) { %>
+            <div class="form-group">
+              <label>Phân loại</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <% product.variants.forEach((v) => { %>
+                  <span class="badge badge-muted"><%= v.color %> - <%= v.size %> (còn <%= v.stock %>)</span>
+                <% }) %>
+              </div>
+            </div>
+          <% } %>
+
+          <div class="detail-row"><span class="label">Tồn kho</span><span><%= product.stock %> <%= product.unit %></span></div>
+          <div class="detail-row"><span class="label">Trọng lượng</span><span><%= product.weight %>g</span></div>
+          <% (product.specs || []).forEach((s) => { %>
+            <div class="detail-row"><span class="label"><%= s.key %></span><span><%= s.value %></span></div>
+          <% }) %>
+
+          <div class="card" style="margin-top:20px;">
+            <h3 style="margin-top:0;">Liên hệ đặt hàng</h3>
+            <% if (sent) { %>
+              <div class="auth-error" style="background:var(--success-bg);color:var(--success);">Đã gửi yêu cầu! Shop sẽ liên hệ lại sớm qua tin nhắn.</div>
+            <% } %>
+            <form method="POST" action="/store/<%= shop.id %>/contact">
+              <input type="hidden" name="productName" value="<%= product.name %>" />
+              <div class="form-row">
+                <div class="form-group"><label>Họ tên</label><input type="text" name="name" required /></div>
+                <div class="form-group"><label>Số điện thoại</label><input type="tel" name="phone" /></div>
+              </div>
+              <div class="form-group"><label>Nội dung</label><textarea name="message" required placeholder="Tôi muốn lấy sỉ 50 cái, còn màu đen size L không?"></textarea></div>
+              <button class="btn btn-primary" type="submit">Gửi yêu cầu cho shop</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px;">
+        <h3 style="margin-top:0;">Mô tả sản phẩm</h3>
+        <p><%= product.description %></p>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3 style="margin-top:0;">Đánh giá (<%= reviews.length %>) <% if (avgRating) { %><span class="stars">⭐ <%= avgRating %></span><% } %></h3>
+        <% if (!reviews.length) { %>
+          <div class="text-muted">Chưa có đánh giá nào.</div>
+        <% } else { %>
+          <% reviews.forEach((r) => { %>
+            <div class="detail-row" style="display:block;">
+              <strong><%= r.customerName %></strong> <span class="stars"><%= '⭐'.repeat(r.rating) %></span>
+              <div><%= r.comment %></div>
+              <% if (r.reply) { %><div class="text-muted" style="margin-top:4px;">↳ Shop trả lời: <%= r.reply %></div><% } %>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+
+      <% if (related.length) { %>
+        <h2 style="margin:32px 0 16px;">Sản phẩm khác của shop</h2>
+        <div class="product-grid">
+          <% related.forEach((p) => { %>
+            <a href="/store/<%= shop.id %>/product/<%= p.id %>" class="product-card">
+              <div class="p-img">📦</div>
+              <div class="p-body">
+                <div class="p-name"><%= p.name %></div>
+                <div class="p-price"><%= p.priceTiers && p.priceTiers[0] ? formatMoney(p.priceTiers[0].price) : 'Liên hệ' %></div>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <%- include('./partials/footer') %>
+  </div>
+</body>
+</html>

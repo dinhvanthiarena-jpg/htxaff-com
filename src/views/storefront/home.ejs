@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="store-page">
+    <%- include('./partials/nav') %>
+
+    <div class="hero-section">
+      <h1>Kết nối triệu nhà bán sỉ &amp; đại lý trên toàn quốc</h1>
+      <p>Tìm nguồn hàng sỉ giá tốt, đặt hàng trực tiếp từ nhà cung cấp, không qua trung gian.</p>
+    </div>
+
+    <div class="store-container">
+      <h2 style="margin-bottom:16px;">Gian hàng nổi bật</h2>
+      <% if (!shops.length) { %>
+        <div class="empty-state"><div class="emoji">🏬</div>Chưa có gian hàng nào.</div>
+      <% } else { %>
+        <% shops.forEach((shop) => { %>
+          <a href="/store/<%= shop.id %>" class="shop-card" style="margin-bottom:16px;">
+            <div class="store-logo-lg" style="background:var(--brand-light);color:var(--brand-dark);width:56px;height:56px;font-size:18px;border-radius:8px;"><%= shop.shopName.charAt(0) %></div>
+            <div>
+              <strong style="font-size:15px;"><%= shop.shopName %></strong>
+              <div class="text-muted" style="font-size:12.5px;margin-top:4px;"><%= shop.addressProvince || shop.address %></div>
+              <div class="text-muted" style="font-size:12.5px;margin-top:2px;">⭐ <%= shop.ratingAvg || '—' %> · <%= shop.tier || 'Thường' %></div>
+            </div>
+          </a>
+        <% }) %>
+      <% } %>
+
+      <h2 style="margin:32px 0 16px;">Sản phẩm bán chạy</h2>
+      <% if (!products.length) { %>
+        <div class="empty-state"><div class="emoji">📦</div>Chưa có sản phẩm nào được đăng bán.</div>
+      <% } else { %>
+        <div class="product-grid">
+          <% products.forEach((p) => { %>
+            <a href="/store/<%= p.shopId %>/product/<%= p.id %>" class="product-card">
+              <div class="p-img">📦</div>
+              <div class="p-body">
+                <div class="p-name"><%= p.name %></div>
+                <div class="p-price"><%= p.priceTiers && p.priceTiers[0] ? formatMoney(p.priceTiers[0].price) : 'Liên hệ' %></div>
+                <div class="p-sold">Đã bán <%= p.sold %> · <%= productShopMap[p.shopId] ? productShopMap[p.shopId].shopName : '' %></div>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <%- include('./partials/footer') %>
+  </div>
+</body>
+</html>

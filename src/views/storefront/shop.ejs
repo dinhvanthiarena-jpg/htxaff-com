@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="store-page">
+    <%- include('./partials/nav') %>
+
+    <div class="store-banner">
+      <div class="store-banner-inner">
+        <div class="store-logo-lg"><%= shop.shopName.charAt(0) %></div>
+        <div class="store-meta">
+          <h1><%= shop.shopName %></h1>
+          <div class="store-stats">
+            <span>⭐ <%= avgRating || shop.ratingAvg || '—' %></span>
+            <span><%= productCount %> sản phẩm</span>
+            <span><%= shop.addressProvince || '' %></span>
+            <span>Hạng: <%= shop.tier || 'Thường' %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="store-container">
+      <form method="GET" action="/store/<%= shop.id %>" class="toolbar">
+        <input type="text" name="q" class="search-input" placeholder="Tìm trong gian hàng..." value="<%= q %>" />
+        <% if (categoryId) { %><input type="hidden" name="category" value="<%= categoryId %>" /><% } %>
+        <button class="btn btn-sm" type="submit">Tìm</button>
+      </form>
+
+      <% if (categories.length) { %>
+      <div class="store-categories">
+        <a href="/store/<%= shop.id %><%= q ? '?q=' + encodeURIComponent(q) : '' %>" class="store-cat-chip <%= !categoryId ? 'active' : '' %>">Tất cả</a>
+        <% categories.forEach((c) => { %>
+          <a href="/store/<%= shop.id %>?category=<%= c.id %><%= q ? '&q=' + encodeURIComponent(q) : '' %>" class="store-cat-chip <%= categoryId === c.id ? 'active' : '' %>"><%= c.name %></a>
+        <% }) %>
+      </div>
+      <% } %>
+
+      <% if (!products.length) { %>
+        <div class="empty-state"><div class="emoji">📦</div>Không có sản phẩm phù hợp.</div>
+      <% } else { %>
+        <div class="product-grid">
+          <% products.forEach((p) => { %>
+            <a href="/store/<%= shop.id %>/product/<%= p.id %>" class="product-card">
+              <div class="p-img">📦</div>
+              <div class="p-body">
+                <div class="p-name"><%= p.name %></div>
+                <div class="p-price"><%= p.priceTiers && p.priceTiers[0] ? formatMoney(p.priceTiers[0].price) : 'Liên hệ' %></div>
+                <div class="p-sold">Đã bán <%= p.sold %></div>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <%- include('./partials/footer') %>
+  </div>
+</body>
+</html>

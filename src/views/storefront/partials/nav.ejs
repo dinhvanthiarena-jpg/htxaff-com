@@ -1,0 +1,13 @@
+<div class="store-nav">
+  <a href="/" style="display:flex;align-items:center;gap:10px;">
+    <div class="logo-badge">HTX</div>
+    <strong style="font-size:16px;">htxaff<span style="color:var(--brand)">.com</span></strong>
+  </a>
+  <form class="store-search" method="GET" action="/search">
+    <input type="text" name="q" placeholder="Tìm sản phẩm sỉ, ví dụ: áo thun, mỹ phẩm..." value="<%= typeof q !== 'undefined' ? q : '' %>" />
+  </form>
+  <div class="store-nav-links">
+    <a href="/login">Kênh người bán</a>
+    <a href="/register" class="btn btn-primary btn-sm">Đăng ký bán hàng</a>
+  </div>
+</div>
